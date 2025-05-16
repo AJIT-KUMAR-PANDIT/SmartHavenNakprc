@@ -1,13 +1,16 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import * as WebSocket from "ws";
+import { WebSocketServer, WebSocket } from "ws";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
   
   // Set up WebSocket server for real-time communication
-  const wss = new WebSocket.WebSocketServer({ server: httpServer });
+  const wss = new WebSocketServer({ 
+    server: httpServer,
+    path: '/api/ws' // Use a distinct path to avoid conflicts with Vite's HMR websocket
+  });
   
   wss.on('connection', (ws) => {
     console.log('WebSocket client connected');
@@ -158,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Notify connected clients about new device
       wss.clients.forEach((client) => {
-        if (client.readyState === client.OPEN) {
+        if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({
             type: 'device_added',
             device
@@ -188,7 +191,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Notify connected clients about updated device
       wss.clients.forEach((client) => {
-        if (client.readyState === client.OPEN) {
+        if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({
             type: 'device_updated',
             device
@@ -218,7 +221,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Notify connected clients about deleted device
       wss.clients.forEach((client) => {
-        if (client.readyState === client.OPEN) {
+        if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({
             type: 'device_deleted',
             deviceId: id

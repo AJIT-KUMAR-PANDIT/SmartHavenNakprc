@@ -17,10 +17,14 @@ import Scenes from "@/pages/scenes";
 import Rooms from "@/pages/rooms";
 import Analytics from "@/pages/analytics";
 import ElectricityMonitor from "@/pages/electricity-monitor";
+import NotificationsPage from "@/pages/notifications";
+import CustomerCare from "@/pages/customer-care";
+import MyPlan from "@/pages/my-plan";
+import AboutPage from "@/pages/about";
 import Notification from "@/components/ui/notification";
 import { AnimatePresence } from "framer-motion";
-import { useAuth } from "@/hooks/use-auth";
-import { ThemeProvider } from "@/hooks/use-theme";
+import { useAuth } from "@/hooks/use-auth.jsx";
+import { ThemeProvider } from "@/hooks/use-theme.jsx";
 import UniversalSearch from "@/components/universal-search";
 import VoiceControl from "@/components/voice-control";
 
@@ -46,6 +50,10 @@ function Router() {
           <Route path="/automations" component={Automations} />
           <Route path="/analytics" component={Analytics} />
           <Route path="/electricity" component={ElectricityMonitor} />
+          <Route path="/notifications" component={NotificationsPage} />
+          <Route path="/customer-care" component={CustomerCare} />
+          <Route path="/my-plan" component={MyPlan} />
+          <Route path="/about" component={AboutPage} />
           <Route path="/logs" component={Logs} />
           <Route path="/settings" component={Settings} />
           <Route component={NotFound} />

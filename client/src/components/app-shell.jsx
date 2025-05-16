@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/use-auth';
 import { Bell, Search, Menu, X, ChevronDown, LogOut } from 'lucide-react';
 import BottomNav from '@/components/bottom-nav';
-import MobileMenu from '@/components/mobile-menu';
+import HamburgerMenu from '@/components/hamburger-menu';
 
 const AppShell = ({ children, onSearchOpen }) => {
   const [location] = useLocation();
@@ -25,6 +25,10 @@ const AppShell = ({ children, onSearchOpen }) => {
     { path: '/automations', icon: 'ri-flow-chart', label: 'Automations' },
     { path: '/analytics', icon: 'ri-bar-chart-line', label: 'Analytics' },
     { path: '/electricity', icon: 'ri-flashlight-line', label: 'Electricity' },
+    { path: '/notifications', icon: 'ri-notification-3-line', label: 'Notifications' },
+    { path: '/my-plan', icon: 'ri-vip-crown-line', label: 'My Plan' },
+    { path: '/customer-care', icon: 'ri-customer-service-2-line', label: 'Support' },
+    { path: '/about', icon: 'ri-information-line', label: 'About' },
     { path: '/logs', icon: 'ri-file-list-3-line', label: 'Logs' },
     { path: '/settings', icon: 'ri-settings-3-line', label: 'Settings' }
   ];
@@ -199,7 +203,7 @@ const AppShell = ({ children, onSearchOpen }) => {
       </main>
       
       {/* Mobile Menu */}
-      <MobileMenu isOpen={showMobileMenu} onClose={() => setShowMobileMenu(false)} />
+      <HamburgerMenu isOpen={showMobileMenu} onClose={() => setShowMobileMenu(false)} />
       
       {/* Bottom Navigation */}
       <BottomNav 

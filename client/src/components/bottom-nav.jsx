@@ -10,8 +10,8 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
   const navItems = [
     { path: '/dashboard', icon: 'ri-dashboard-line', label: 'Home' },
     { path: '/devices', icon: 'ri-device-line', label: 'Devices' },
+    { path: '/notifications', icon: 'ri-notification-3-line', label: 'Status' },
     { path: '/electricity', icon: 'ri-flashlight-line', label: 'Energy' },
-    { path: '/rooms', icon: 'ri-home-line', label: 'Rooms' },
     { path: '/settings', icon: 'ri-settings-3-line', label: 'Settings' }
   ];
   
