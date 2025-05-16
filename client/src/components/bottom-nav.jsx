@@ -12,7 +12,7 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
   const navItems = [
     { path: '/dashboard', icon: 'ri-dashboard-line', label: 'Home' },
     { path: '/devices', icon: 'ri-device-line', label: 'Devices' },
-    null, // Center spacer for mic button
+    { type: 'voice', label: 'Voice' },
     { path: '/notifications', icon: 'ri-notification-3-line', label: 'Status' },
     { path: '/settings', icon: 'ri-settings-3-line', label: 'Settings' }
   ];
@@ -31,12 +31,13 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
         {/* Main navigation items */}
         <div className="flex-1 flex justify-center items-center">
           {navItems.map((item, index) => {
-            if (item === null) {
+            if (item.type === 'voice') {
               return (
-                <div key="mic-button" className="relative px-4">
-                  <div className="absolute -top-6 left-1/2 -translate-x-1/2">
-                    <VoiceControl />
+                <div key="voice-control" className="flex flex-col items-center px-4">
+                  <div className={`p-2 rounded-full ${isListening ? 'bg-red-500' : 'bg-[#2563eb]'}`}>
+                    <VoiceControl compact={true} />
                   </div>
+                  <span className="text-xs mt-1 text-gray-400">{item.label}</span>
                 </div>
               );
             }

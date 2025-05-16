@@ -5,7 +5,7 @@ import { useLocation } from 'wouter';
 import { useDevices } from '@/hooks/use-devices';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const VoiceControl = () => {
+const VoiceControl = ({ compact = false }) => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [feedback, setFeedback] = useState('');

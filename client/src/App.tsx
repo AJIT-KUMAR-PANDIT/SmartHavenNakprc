@@ -65,8 +65,7 @@ function Router() {
       {/* Universal Search Modal */}
       <UniversalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       
-      {/* Voice Control */}
-      <VoiceControl />
+      {/* Voice Control is now in bottom nav */}
       
       {/* Interactive Guide */}
       <AppGuide />
