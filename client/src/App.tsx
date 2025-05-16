@@ -65,7 +65,8 @@ function Router() {
       {/* Universal Search Modal */}
       <UniversalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       
-      {/* Voice Control is now in bottom nav */}
+      {/* Voice Control */}
+      <VoiceControl />
       
       {/* Interactive Guide */}
       <AppGuide />
@@ -97,9 +98,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <AuthProvider>
-            <DataModeProvider>
-              <div className="app-container dark:bg-[#121218]">
+          <DataModeProvider>
+            <AuthProvider>
+              <div className="app-container">
                 <Toaster />
                 <Router />
                 <Notification 
