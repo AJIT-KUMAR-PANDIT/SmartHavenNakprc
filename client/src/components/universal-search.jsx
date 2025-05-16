@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'wouter';
+import { useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, ArrowRight } from 'lucide-react';
 import { useDevices } from '@/hooks/use-devices';
@@ -34,7 +34,7 @@ const UniversalSearch = ({ isOpen, onClose }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [, navigate] = useLocation();
+  const [, setLocation] = useLocation();
   const inputRef = useRef(null);
   
   const { devices } = useDevices();
@@ -150,7 +150,7 @@ const UniversalSearch = ({ isOpen, onClose }) => {
   
   // Handle result click
   const handleResultClick = (result) => {
-    navigate(result.path);
+    setLocation(result.path);
     onClose();
   };
   

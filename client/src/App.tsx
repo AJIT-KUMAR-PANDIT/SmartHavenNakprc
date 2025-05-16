@@ -23,7 +23,7 @@ import MyPlan from "@/pages/my-plan";
 import AboutPage from "@/pages/about";
 import Notification from "@/components/ui/notification";
 import { AnimatePresence } from "framer-motion";
-import { useAuth } from "@/hooks/use-auth.jsx";
+import { useAuth, AuthProvider } from "@/hooks/use-auth.jsx";
 import { ThemeProvider } from "@/hooks/use-theme.jsx";
 import { DataModeProvider } from "@/contexts/data-mode-context";
 import UniversalSearch from "@/components/universal-search";
@@ -99,17 +99,19 @@ function App() {
       <ThemeProvider>
         <TooltipProvider>
           <DataModeProvider>
-            <div className="app-container">
-              <Toaster />
-              <Router />
-              <Notification 
-                visible={notification.visible}
-                message={notification.message}
-                detail={notification.detail}
-                type={notification.type}
-                onClose={() => setNotification(prev => ({ ...prev, visible: false }))}
-              />
-            </div>
+            <AuthProvider>
+              <div className="app-container">
+                <Toaster />
+                <Router />
+                <Notification 
+                  visible={notification.visible}
+                  message={notification.message}
+                  detail={notification.detail}
+                  type={notification.type}
+                  onClose={() => setNotification(prev => ({ ...prev, visible: false }))}
+                />
+              </div>
+            </AuthProvider>
           </DataModeProvider>
         </TooltipProvider>
       </ThemeProvider>
