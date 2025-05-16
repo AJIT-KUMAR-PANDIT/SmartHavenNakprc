@@ -37,10 +37,15 @@ export function ThemeProvider({ children }) {
   
   // Apply theme changes
   useEffect(() => {
+    const applyTheme = (theme) => {
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(theme);
+    };
+
     if (currentTheme === 'system') {
-      document.documentElement.className = systemTheme;
+      applyTheme(systemTheme);
     } else {
-      document.documentElement.className = currentTheme;
+      applyTheme(currentTheme);
     }
   }, [currentTheme, systemTheme]);
   

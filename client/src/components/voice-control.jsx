@@ -7,7 +7,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 const VoiceControl = () => {
   const isMobile = useIsMobile();
-  const positionClass = isMobile ? '' : 'fixed right-8 bottom-[121px]';
+  const positionClass = isMobile ? '' : 'fixed left-1/2 -translate-x-1/2 bottom-0';
 
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
