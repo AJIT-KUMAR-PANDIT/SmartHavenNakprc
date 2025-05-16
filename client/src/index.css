@@ -67,9 +67,23 @@
     @apply border-border;
   }
 
+  /* Light mode styles */
+  :root {
+    color-scheme: light;
+  }
+
   body {
-    @apply font-sans antialiased bg-[#121218] text-[#f8fafc];
+    @apply font-sans antialiased bg-white text-[#1e1e2e];
     overflow-x: hidden;
+  }
+
+  /* Dark mode styles */
+  .dark {
+    color-scheme: dark;
+  }
+
+  .dark body {
+    @apply bg-[#121218] text-[#f8fafc];
   }
 }
 

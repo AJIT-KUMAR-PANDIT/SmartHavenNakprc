@@ -13,32 +13,50 @@ import Routes from "@/pages/routes";
 import Logs from "@/pages/logs";
 import Settings from "@/pages/settings";
 import Automations from "@/pages/automations";
+import Scenes from "@/pages/scenes";
+import Rooms from "@/pages/rooms";
+import Analytics from "@/pages/analytics";
+import ElectricityMonitor from "@/pages/electricity-monitor";
 import Notification from "@/components/ui/notification";
 import { AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
+import { ThemeProvider } from "@/hooks/use-theme";
+import UniversalSearch from "@/components/universal-search";
+import VoiceControl from "@/components/voice-control";
 
 function Router() {
   const { isAuthenticated } = useAuth();
   const [location] = useLocation();
+  const [searchOpen, setSearchOpen] = useState(false);
 
   if (!isAuthenticated) {
     return <AuthScreen />;
   }
 
   return (
-    <AppShell>
+    <AppShell onSearchOpen={() => setSearchOpen(true)}>
       <AnimatePresence mode="wait">
         <Switch location={location} key={location}>
           <Route path="/" component={Dashboard} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/devices" component={Devices} />
+          <Route path="/rooms" component={Rooms} />
+          <Route path="/scenes" component={Scenes} />
           <Route path="/routes" component={Routes} />
           <Route path="/automations" component={Automations} />
+          <Route path="/analytics" component={Analytics} />
+          <Route path="/electricity" component={ElectricityMonitor} />
           <Route path="/logs" component={Logs} />
           <Route path="/settings" component={Settings} />
           <Route component={NotFound} />
         </Switch>
       </AnimatePresence>
+      
+      {/* Universal Search Modal */}
+      <UniversalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      
+      {/* Voice Control */}
+      <VoiceControl />
     </AppShell>
   );
 }
@@ -64,19 +82,21 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <div className="app-container">
-          <Toaster />
-          <Router />
-          <Notification 
-            visible={notification.visible}
-            message={notification.message}
-            detail={notification.detail}
-            type={notification.type}
-            onClose={() => setNotification(prev => ({ ...prev, visible: false }))}
-          />
-        </div>
-      </TooltipProvider>
+      <ThemeProvider>
+        <TooltipProvider>
+          <div className="app-container">
+            <Toaster />
+            <Router />
+            <Notification 
+              visible={notification.visible}
+              message={notification.message}
+              detail={notification.detail}
+              type={notification.type}
+              onClose={() => setNotification(prev => ({ ...prev, visible: false }))}
+            />
+          </div>
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

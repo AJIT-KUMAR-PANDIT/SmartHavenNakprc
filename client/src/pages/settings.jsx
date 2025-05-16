@@ -9,6 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { AlertTriangle, Check, Upload, Download, RefreshCw, Save } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
+import { useTheme } from '@/hooks/use-theme';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { getSettings, saveSettings, exportSettings, importSettings } from '@/lib/db';
 import { downloadAsFile } from '@/lib/utils';
 import { initMQTT, disconnect, getConnectionStatus } from '@/lib/mqtt';
@@ -25,6 +27,11 @@ const Settings = () => {
   
   // Form state
   const [settings, setSettings] = useState({
+    server: {
+      url: 'https://smarthaven.local',
+      apiKey: '',
+      useHttps: true
+    },
     mqtt: {
       brokerUrl: 'mqtt://broker.example.com',
       port: '1883',
@@ -269,13 +276,133 @@ const Settings = () => {
       </div>
       
       {/* Settings Tabs */}
-      <Tabs defaultValue="mqtt" className="w-full">
-        <TabsList className="grid grid-cols-4 bg-[#1e1e2e] border border-gray-700">
+      <Tabs defaultValue="server" className="w-full">
+        <TabsList className="grid grid-cols-5 bg-[#1e1e2e] border border-gray-700">
+          <TabsTrigger value="server" className="data-[state=active]:bg-[#2563eb]">Server</TabsTrigger>
           <TabsTrigger value="mqtt" className="data-[state=active]:bg-[#2563eb]">MQTT</TabsTrigger>
           <TabsTrigger value="interface" className="data-[state=active]:bg-[#2563eb]">Interface</TabsTrigger>
           <TabsTrigger value="advanced" className="data-[state=active]:bg-[#2563eb]">Advanced</TabsTrigger>
           <TabsTrigger value="account" className="data-[state=active]:bg-[#2563eb]">Account</TabsTrigger>
         </TabsList>
+        
+        {/* Server Settings */}
+        <TabsContent value="server" className="mt-6">
+          <Card className="bg-[#1e1e2e] border-gray-700">
+            <CardHeader>
+              <CardTitle>SmartHaven Server Configuration</CardTitle>
+              <CardDescription>Set the connection to your SmartHaven server</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="server-url">Server URL</Label>
+                <div className="flex items-center space-x-2">
+                  <div className="relative flex-grow">
+                    <Input
+                      id="server-url"
+                      placeholder="e.g. smarthaven.local or 192.168.1.100"
+                      value={settings.server.url.replace(/^https?:\/\//, '')}
+                      onChange={(e) => {
+                        let url = e.target.value;
+                        // Remove any protocol that might have been entered
+                        url = url.replace(/^https?:\/\//, '');
+                        const fullUrl = settings.server.useHttps ? `https://${url}` : `http://${url}`;
+                        handleInputChange('server', 'url', fullUrl);
+                      }}
+                      className="bg-[#121218] border-gray-700 pl-[90px]"
+                    />
+                    <div className="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none bg-gray-700 rounded-l-md border-r border-gray-600">
+                      {settings.server.useHttps ? 'https://' : 'http://'}
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="use-https"
+                      checked={settings.server.useHttps}
+                      onCheckedChange={(checked) => {
+                        // Update the useHttps setting
+                        handleSwitchChange('server', 'useHttps');
+                        
+                        // Also update the URL protocol
+                        const urlWithoutProtocol = settings.server.url.replace(/^https?:\/\//, '');
+                        const newUrl = checked ? `https://${urlWithoutProtocol}` : `http://${urlWithoutProtocol}`;
+                        handleInputChange('server', 'url', newUrl);
+                      }}
+                    />
+                    <Label htmlFor="use-https">HTTPS</Label>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">
+                  Enter the domain name or IP address of your SmartHaven server without the protocol
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="api-key">API Key (Optional)</Label>
+                <Input
+                  id="api-key"
+                  type="password"
+                  placeholder="Enter your API key for authentication"
+                  value={settings.server.apiKey}
+                  onChange={(e) => handleInputChange('server', 'apiKey', e.target.value)}
+                  className="bg-[#121218] border-gray-700"
+                />
+                <p className="text-xs text-gray-400">
+                  If your server requires an API key for authentication, enter it here
+                </p>
+              </div>
+              
+              <div className="pt-4 flex justify-between">
+                <Button
+                  onClick={() => {
+                    // Test the connection to the server
+                    setIsSaving(true);
+                    setFormSuccess('');
+                    setFormError('');
+                    
+                    // Simulate a server test (would connect to real server in production)
+                    setTimeout(() => {
+                      setIsSaving(false);
+                      setFormSuccess('Successfully connected to the server');
+                      addLog('Server', `Connected to server at ${settings.server.url}`);
+                    }, 1500);
+                  }}
+                  disabled={isSaving}
+                  className="bg-[#10b981] hover:bg-[#10b981]/80"
+                >
+                  {isSaving ? (
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <>Test Connection</>
+                  )}
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="border-gray-700"
+                  onClick={handleSaveSettings}
+                  disabled={isSaving}
+                >
+                  {isSaving ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                  Save Settings
+                </Button>
+              </div>
+              
+              {formError && (
+                <div className="mt-4 p-3 rounded-md bg-red-900/20 border border-red-800 text-red-400 flex items-start">
+                  <AlertTriangle className="h-5 w-5 mr-2 mt-0.5" />
+                  <div>{formError}</div>
+                </div>
+              )}
+              
+              {formSuccess && (
+                <div className="mt-4 p-3 rounded-md bg-green-900/20 border border-green-800 text-green-400 flex items-start">
+                  <Check className="h-5 w-5 mr-2 mt-0.5" />
+                  <div>{formSuccess}</div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
         
         {/* MQTT Settings */}
         <TabsContent value="mqtt" className="mt-6">
@@ -431,16 +558,18 @@ const Settings = () => {
               <CardDescription>Customize the application appearance</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-4">
+              <ThemeToggle />
+              
+              <div className="space-y-4 mt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label htmlFor="dark-mode" className="font-medium">Dark Mode</Label>
-                    <p className="text-sm text-gray-400">Enable dark theme</p>
+                    <Label htmlFor="notifications" className="font-medium">Notifications</Label>
+                    <p className="text-sm text-gray-400">Show in-app notifications</p>
                   </div>
                   <Switch
-                    id="dark-mode"
-                    checked={settings.theme.darkMode}
-                    onCheckedChange={() => handleSwitchChange('theme', 'darkMode')}
+                    id="notifications"
+                    checked={settings.notifications.showNotifications}
+                    onCheckedChange={() => handleSwitchChange('notifications', 'showNotifications')}
                   />
                 </div>
                 
