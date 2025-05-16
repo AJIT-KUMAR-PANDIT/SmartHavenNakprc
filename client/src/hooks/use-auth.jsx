@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
           const parsedUser = JSON.parse(storedUser);
           setCurrentUser(parsedUser);
           setIsAuthenticated(true);
-          addLog('Auth', `User ${parsedUser.username} session restored`);
+          // Log authentication action (removed addLog function call that's not defined)
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -47,17 +47,17 @@ export function AuthProvider({ children }) {
         setIsAuthenticated(true);
         // Store user in local storage for session persistence
         localStorage.setItem('currentUser', JSON.stringify(user));
-        addLog('Auth', `User ${username} logged in`);
+        console.log('Auth:', `User ${username} logged in`);
         return true;
       } else {
         setAuthError('Invalid username or PIN');
-        addLog('Auth', `Failed login attempt for user ${username}`);
+        console.error('Auth:', `Failed login attempt for user ${username}`);
         return false;
       }
     } catch (error) {
       console.error('Login failed:', error);
       setAuthError('Login failed: ' + error.message);
-      addLog('Auth', `Login error: ${error.message}`);
+      console.error('Auth:', `Login error: ${error.message}`);
       return false;
     } finally {
       setIsLoading(false);
@@ -87,7 +87,7 @@ export function AuthProvider({ children }) {
         setCurrentUser(newUser);
         setIsAuthenticated(true);
         localStorage.setItem('currentUser', JSON.stringify(newUser));
-        addLog('Auth', `New user ${username} created and logged in`);
+        console.log('Auth:', `New user ${username} created and logged in`);
         return true;
       } else {
         setAuthError('Failed to create user');
@@ -96,7 +96,7 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error('Signup failed:', error);
       setAuthError('Signup failed: ' + error.message);
-      addLog('Auth', `Signup error: ${error.message}`);
+      console.error('Auth:', `Signup error: ${error.message}`);
       return false;
     } finally {
       setIsLoading(false);
@@ -108,7 +108,7 @@ export function AuthProvider({ children }) {
     setCurrentUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem('currentUser');
-    addLog('Auth', 'User logged out');
+    console.log('Auth:', 'User logged out');
   };
 
   // Provider value
