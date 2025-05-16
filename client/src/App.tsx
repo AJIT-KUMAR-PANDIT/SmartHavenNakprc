@@ -100,7 +100,7 @@ function App() {
         <TooltipProvider>
           <DataModeProvider>
             <AuthProvider>
-              <div className="app-container">
+              <div className="app-container min-h-screen bg-white dark:bg-[#121218] transition-colors duration-200">
                 <Toaster />
                 <Router />
                 <Notification 

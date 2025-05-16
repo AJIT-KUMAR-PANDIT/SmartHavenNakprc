@@ -112,9 +112,9 @@ const VoiceControl = () => {
       {/* Mic button - positioned differently for mobile and desktop */}
       <button
         onClick={toggleListening}
-        className={`flex items-center justify-center rounded-full shadow-lg transition-all duration-300
+        className={`flex items-center justify-center rounded-full transition-all duration-300
           ${isListening ? 'bg-red-500' : 'bg-blue-600'}
-          ${isMobile ? 'w-14 h-14' : 'w-12 h-12 fixed bottom-8 right-8 hover:scale-110'}`}
+          ${isMobile ? 'w-12 h-12' : 'w-12 h-12 hover:scale-105'}`}
       >
         {isListening ? (
           <MicOff className="h-6 w-6 text-white" />
