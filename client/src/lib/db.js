@@ -63,7 +63,7 @@ export function initializeDB() {
 
 // User functions
 export function createUser(userData) {
-  initializeDB().then(() => {
+  return initializeDB().then(() => {
     const existingUser = users.findOne({ username: userData.username });
     if (existingUser) {
       return existingUser;

@@ -50,7 +50,7 @@ const AuthScreen = () => {
             <i className="ri-hub-fill text-7xl text-[#2563eb]"></i>
             <div className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#10b981] animate-pulse-slow"></div>
           </div>
-          <h1 className="text-3xl font-bold mt-4 mb-2">NodeMCU IoT Hub</h1>
+          <h1 className="text-3xl font-bold mt-4 mb-2">SmartHaven</h1>
           <p className="text-gray-400">
             {mode === 'login' ? 'Enter your PIN to unlock' : 'Create a new account'}
           </p>

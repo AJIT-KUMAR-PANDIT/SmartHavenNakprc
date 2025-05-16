@@ -1,5 +1,6 @@
 // This file is being moved to use-auth.jsx to support JSX syntax
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createUser, getAllUsers, authenticateUser } from '@/lib/db';
 
 // Create a context for authentication
 const AuthContext = createContext(null);
