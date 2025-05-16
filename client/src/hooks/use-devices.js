@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { addDevice, updateDevice, removeDevice, getAllDevices, updateDeviceStatus } from '@/lib/db';
+import { addDevice, updateDevice, removeDevice, getAllDevices, updateDeviceStatus, addLog } from '@/lib/db';
 import { controlDevice } from '@/lib/mqtt';
-import { addLog } from '@/lib/db';
 import { useDataMode } from '@/contexts/data-mode-context';
 
 export function useDevices() {
