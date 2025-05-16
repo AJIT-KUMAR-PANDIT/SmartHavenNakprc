@@ -1,26 +1,25 @@
+
 import React from 'react';
 import { Link, useLocation } from 'wouter';
-import { motion } from 'framer-motion';
 import { Menu, Search } from 'lucide-react';
+import VoiceControl from './voice-control';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
   const [location] = useLocation();
+  const isMobile = useIsMobile();
 
-  // Primary navigation items for bottom bar
   const navItems = [
     { path: '/dashboard', icon: 'ri-dashboard-line', label: 'Home' },
     { path: '/devices', icon: 'ri-device-line', label: 'Devices' },
+    null, // Center spacer for mic button
     { path: '/notifications', icon: 'ri-notification-3-line', label: 'Status' },
-    { path: '/electricity', icon: 'ri-flashlight-line', label: 'Energy' },
     { path: '/settings', icon: 'ri-settings-3-line', label: 'Settings' }
   ];
 
-  // Calculate center position for floating mic button
-  const centerIndex = Math.floor(navItems.length / 2);
-
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#1e1e2e] shadow-lg border-t border-gray-800 z-40 lg:hidden">
-      <div className="flex justify-between items-center h-16 px-4">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#1e1e2e] shadow-lg border-t border-gray-800 z-40 lg:hidden">
+      <div className="flex items-center justify-between h-16 px-4 max-w-screen-xl mx-auto relative">
         {/* Left side menu button */}
         <button 
           onClick={onMenuOpen}
@@ -30,19 +29,24 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
         </button>
 
         {/* Main navigation items */}
-        <div className="flex justify-center items-center space-x-6">
+        <div className="flex-1 flex justify-center items-center">
           {navItems.map((item, index) => {
-            const isActive = location === item.path || 
-                             (item.path === '/dashboard' && location === '/');
-
-            // Skip rendering the middle item to make space for the floating button
-            if (index === centerIndex) {
-              return <div key={item.path} className="w-12" />; // Spacer
+            if (item === null) {
+              return (
+                <div key="mic-button" className="relative px-4">
+                  <div className="absolute -top-6 left-1/2 -translate-x-1/2">
+                    <VoiceControl />
+                  </div>
+                </div>
+              );
             }
+
+            const isActive = location === item.path || 
+                           (item.path === '/dashboard' && location === '/');
 
             return (
               <Link key={item.path} href={item.path}>
-                <a className="flex flex-col items-center">
+                <a className="flex flex-col items-center px-4">
                   <div className={`p-2 rounded-full ${isActive ? 'bg-[#2563eb]/10' : ''}`}>
                     <i className={`${item.icon} text-xl ${isActive ? 'text-[#2563eb]' : 'text-gray-400'}`} />
                   </div>
@@ -63,9 +67,7 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
           <Search className="h-6 w-6" />
         </button>
       </div>
-
-      {/* Floating microphone button will be rendered outside this component */}
-    </div>
+    </nav>
   );
 };
 

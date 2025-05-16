@@ -3,58 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, MicOff, X, Activity } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { useDevices } from '@/hooks/use-devices';
-
-// Voice commands that the system will recognize
-const VOICE_COMMANDS = {
-  NAVIGATE: {
-    regex: /(?:go to|open|navigate to|show) (dashboard|devices|rooms|scenes|routes|electricity|analytics|logs|settings)/i,
-    action: (matches, navigate) => {
-      const page = matches[1].toLowerCase();
-      const pathMap = {
-        'dashboard': '/dashboard',
-        'devices': '/devices',
-        'rooms': '/rooms',
-        'scenes': '/scenes',
-        'routes': '/routes',
-        'electricity': '/electricity',
-        'analytics': '/analytics',
-        'logs': '/logs',
-        'settings': '/settings'
-      };
-
-      if (pathMap[page]) {
-        navigate(pathMap[page]);
-        return `Navigating to ${page}`;
-      }
-      return `Could not find page ${page}`;
-    }
-  },
-  TOGGLE_DEVICE: {
-    regex: /(?:turn|switch) (on|off) (?:the )?(.*?)(?:light|device|fan|heater|tv)?$/i,
-    action: (matches, navigate, { devices, controlDevice }) => {
-      const action = matches[1].toLowerCase();
-      const deviceName = matches[2].trim().toLowerCase();
-
-      const device = devices.find(d => 
-        d.name.toLowerCase().includes(deviceName) || 
-        d.type.toLowerCase().includes(deviceName)
-      );
-
-      if (device) {
-        controlDevice(device.id, action === 'on' ? 'turnOn' : 'turnOff');
-        return `Turning ${action} ${device.name}`;
-      }
-      return `Could not find device "${deviceName}"`;
-    }
-  },
-  SHOW_CONSUMPTION: {
-    regex: /(?:show|display|what is) (?:the )?(electricity|power|energy) (?:consumption|usage|bill)/i,
-    action: (matches, navigate) => {
-      navigate('/electricity');
-      return 'Opening electricity monitor';
-    }
-  }
-};
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const VoiceControl = () => {
   const [isListening, setIsListening] = useState(false);
@@ -64,6 +13,7 @@ const VoiceControl = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [, navigate] = useLocation();
   const { devices, controlDevice } = useDevices();
+  const isMobile = useIsMobile();
 
   const recognitionRef = useRef(null);
 
@@ -158,13 +108,13 @@ const VoiceControl = () => {
   };
 
   return (
-    <div className="relative flex justify-center items-center md:fixed md:bottom-8 md:right-8">
-      {/* Floating microphone button */}
+    <>
+      {/* Mic button - positioned differently for mobile and desktop */}
       <button
         onClick={toggleListening}
-        className={`floating-mic-button fixed z-50 flex items-center justify-center rounded-full shadow-lg ${
-          isListening ? 'bg-red-500 scale-110' : 'bg-blue-600'
-        } w-14 h-14 transition-all duration-300`}
+        className={`flex items-center justify-center rounded-full shadow-lg transition-all duration-300
+          ${isListening ? 'bg-red-500' : 'bg-blue-600'}
+          ${isMobile ? 'w-14 h-14' : 'w-12 h-12 fixed bottom-8 right-8 hover:scale-110'}`}
       >
         {isListening ? (
           <MicOff className="h-6 w-6 text-white" />
@@ -172,7 +122,6 @@ const VoiceControl = () => {
           <Mic className="h-6 w-6 text-white" />
         )}
 
-        {/* Animated rings when active */}
         {isListening && (
           <>
             <span className="absolute inset-0 rounded-full animate-ping-slow bg-red-500 opacity-30"></span>
@@ -231,7 +180,7 @@ const VoiceControl = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 };
 
