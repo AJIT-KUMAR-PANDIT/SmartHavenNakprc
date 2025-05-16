@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react';
 import { addDevice, updateDevice, removeDevice, getAllDevices, updateDeviceStatus } from '@/lib/db';
 import { controlDevice } from '@/lib/mqtt';
 import { addLog } from '@/lib/db';
+import { useDataMode } from '@/contexts/data-mode-context';
 
 export function useDevices() {
   const [devices, setDevices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { useMockData, mockData, isDbInitialized } = useDataMode();
   
-  // Load all devices on initial mount
+  // Load all devices when component mounts or when data mode changes
   useEffect(() => {
     loadDevices();
-  }, []);
+  }, [useMockData]);
   
   // Function to load devices
   const loadDevices = async () => {
@@ -19,8 +21,14 @@ export function useDevices() {
     setError(null);
     
     try {
-      const allDevices = await getAllDevices();
-      setDevices(allDevices);
+      if (useMockData) {
+        // Use mock data when in demo mode
+        setDevices(mockData.devices);
+      } else {
+        // Use real data from local database
+        const allDevices = await getAllDevices();
+        setDevices(allDevices);
+      }
     } catch (err) {
       console.error('Failed to load devices:', err);
       setError('Failed to load devices');
@@ -33,9 +41,26 @@ export function useDevices() {
   // Function to add a new device
   const createDevice = async (deviceData) => {
     try {
-      const newDevice = await addDevice(deviceData);
-      setDevices(prev => [...prev, newDevice]);
-      return newDevice;
+      if (useMockData) {
+        // In mock mode, add to the mock data
+        const newDevice = {
+          ...deviceData,
+          id: `device_${Date.now()}`,
+          status: 'offline',
+          lastSeen: null
+        };
+        
+        const updatedDevices = [...mockData.devices, newDevice];
+        mockData.devices = updatedDevices;
+        setDevices(updatedDevices);
+        
+        return newDevice;
+      } else {
+        // In real mode, add to the database
+        const newDevice = await addDevice(deviceData);
+        setDevices(prev => [...prev, newDevice]);
+        return newDevice;
+      }
     } catch (err) {
       console.error('Failed to add device:', err);
       setError('Failed to add device');
@@ -47,11 +72,26 @@ export function useDevices() {
   // Function to update an existing device
   const editDevice = async (id, deviceData) => {
     try {
-      const updated = await updateDevice(id, deviceData);
-      if (updated) {
-        setDevices(prev => prev.map(d => d.id === id ? updated : d));
+      if (useMockData) {
+        // In mock mode, update the mock data
+        const index = mockData.devices.findIndex(d => d.id === id);
+        if (index !== -1) {
+          const updated = { ...mockData.devices[index], ...deviceData };
+          const updatedDevices = [...mockData.devices];
+          updatedDevices[index] = updated;
+          mockData.devices = updatedDevices;
+          setDevices(updatedDevices);
+          return updated;
+        }
+        return null;
+      } else {
+        // In real mode, update in the database
+        const updated = await updateDevice(id, deviceData);
+        if (updated) {
+          setDevices(prev => prev.map(d => d.id === id ? updated : d));
+        }
+        return updated;
       }
-      return updated;
     } catch (err) {
       console.error('Failed to update device:', err);
       setError('Failed to update device');
@@ -63,11 +103,20 @@ export function useDevices() {
   // Function to delete a device
   const deleteDevice = async (id) => {
     try {
-      const success = await removeDevice(id);
-      if (success) {
-        setDevices(prev => prev.filter(d => d.id !== id));
+      if (useMockData) {
+        // In mock mode, remove from mock data
+        const updatedDevices = mockData.devices.filter(d => d.id !== id);
+        mockData.devices = updatedDevices;
+        setDevices(updatedDevices);
+        return true;
+      } else {
+        // In real mode, remove from database
+        const success = await removeDevice(id);
+        if (success) {
+          setDevices(prev => prev.filter(d => d.id !== id));
+        }
+        return success;
       }
-      return success;
     } catch (err) {
       console.error('Failed to delete device:', err);
       setError('Failed to delete device');
@@ -87,9 +136,22 @@ export function useDevices() {
         )
       );
       
-      // Then send the actual command
-      const result = await controlDevice(id, command);
-      return result;
+      if (useMockData) {
+        // In mock mode, update the mock data
+        const index = mockData.devices.findIndex(d => d.id === id);
+        if (index !== -1) {
+          mockData.devices[index].status = command === 'on' ? 'online' : 'offline';
+          mockData.devices[index].lastSeen = new Date().toISOString();
+          // Log the action
+          addLog('Device Control', `${mockData.devices[index].name} turned ${command}`);
+          return true;
+        }
+        return false;
+      } else {
+        // In real mode, send the actual command
+        const result = await controlDevice(id, command);
+        return result;
+      }
     } catch (err) {
       console.error('Failed to control device:', err);
       setError('Failed to control device');
@@ -104,11 +166,28 @@ export function useDevices() {
   // Function to update a device's status
   const updateStatus = async (id, status) => {
     try {
-      const updated = await updateDeviceStatus(id, status);
-      if (updated) {
-        setDevices(prev => prev.map(d => d.id === id ? updated : d));
+      if (useMockData) {
+        // In mock mode, update the mock data
+        const index = mockData.devices.findIndex(d => d.id === id);
+        if (index !== -1) {
+          const updated = { 
+            ...mockData.devices[index], 
+            status,
+            lastSeen: new Date().toISOString()
+          };
+          mockData.devices[index] = updated;
+          setDevices([...mockData.devices]);
+          return updated;
+        }
+        return null;
+      } else {
+        // In real mode, update in the database
+        const updated = await updateDeviceStatus(id, status);
+        if (updated) {
+          setDevices(prev => prev.map(d => d.id === id ? updated : d));
+        }
+        return updated;
       }
-      return updated;
     } catch (err) {
       console.error('Failed to update device status:', err);
       setError('Failed to update device status');

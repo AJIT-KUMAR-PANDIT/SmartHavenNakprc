@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { AlertTriangle, Check, Upload, Download, RefreshCw, Save } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useTheme } from '@/hooks/use-theme';
+import { useDataMode } from '@/contexts/data-mode-context';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { getSettings, saveSettings, exportSettings, importSettings } from '@/lib/db';
 import { downloadAsFile } from '@/lib/utils';
@@ -18,6 +19,7 @@ import { addLog } from '@/lib/db';
 
 const Settings = () => {
   const { currentUser, logout } = useAuth();
+  const { useMockData, toggleMockData, resetGuide, showGuide, toggleGuide, resetMockData, syncToLocalDb } = useDataMode();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [mqttStatus, setMqttStatus] = useState(getConnectionStatus());
@@ -561,6 +563,102 @@ const Settings = () => {
               <ThemeToggle />
               
               <div className="space-y-4 mt-6">
+                <h3 className="text-lg font-medium pt-2 pb-1 border-b border-gray-700">Data Mode Settings</h3>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="mock-data" className="font-medium">Use Demo Mode</Label>
+                    <p className="text-sm text-gray-400">Toggle between demo data and real device data</p>
+                  </div>
+                  <Switch
+                    id="mock-data"
+                    checked={useMockData}
+                    onCheckedChange={toggleMockData}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="show-guide" className="font-medium">Interactive Guide</Label>
+                    <p className="text-sm text-gray-400">Show guided instructions for new users</p>
+                  </div>
+                  <Switch
+                    id="show-guide"
+                    checked={showGuide}
+                    onCheckedChange={toggleGuide}
+                    disabled={!useMockData}
+                  />
+                </div>
+                
+                <div className="flex justify-between mt-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-gray-700"
+                    onClick={resetGuide}
+                    disabled={!useMockData}
+                  >
+                    Reset Guide
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    size="sm" 
+                    onClick={resetMockData}
+                    disabled={!useMockData}
+                  >
+                    Reset Demo Data
+                  </Button>
+                </div>
+                
+                <div className="mt-4 pt-2 border-t border-gray-700">
+                  <div className="p-3 bg-blue-900/20 border border-blue-800 rounded-md mb-4">
+                    <h4 className="text-sm font-medium text-blue-400 mb-1">About Data Modes</h4>
+                    <p className="text-xs text-gray-300 mb-2">
+                      <span className="font-semibold">Demo Mode:</span> Uses pre-loaded sample data to demonstrate features. Useful when learning how to use SmartHaven.
+                    </p>
+                    <p className="text-xs text-gray-300">
+                      <span className="font-semibold">Real Data Mode:</span> Connects to your actual devices using the local database. Devices can be controlled in real-time via your configured server and MQTT broker.
+                    </p>
+                  </div>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="w-full border-blue-700 hover:bg-blue-800"
+                    onClick={async () => {
+                      setIsSaving(true);
+                      setFormError('');
+                      setFormSuccess('');
+                      
+                      try {
+                        const success = await syncToLocalDb();
+                        if (success) {
+                          setFormSuccess('Demo data successfully synced to local database');
+                          addLog('Settings', 'Demo data synced to local database');
+                        } else {
+                          setFormError('Failed to sync demo data to local database');
+                        }
+                      } catch (error) {
+                        console.error('Error syncing data:', error);
+                        setFormError(`Error: ${error.message}`);
+                      } finally {
+                        setIsSaving(false);
+                      }
+                    }}
+                    disabled={!useMockData || isSaving}
+                  >
+                    {isSaving ? (
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    ) : null}
+                    Sync Demo Data to Local Database
+                  </Button>
+                  <p className="text-xs text-gray-400 mt-1">
+                    This will copy all demo devices and routes to your local database so you can use them with real-time control
+                  </p>
+                </div>
+                
+                <h3 className="text-lg font-medium pt-4 pb-1 border-b border-gray-700">Notifications</h3>
+                
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="notifications" className="font-medium">Notifications</Label>

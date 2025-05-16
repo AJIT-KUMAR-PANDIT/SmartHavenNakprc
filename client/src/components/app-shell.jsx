@@ -3,7 +3,9 @@ import { Link, useLocation } from 'wouter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/use-auth';
-import { Bell, Search, Menu, X, ChevronDown, LogOut } from 'lucide-react';
+import { useDataMode } from '@/contexts/data-mode-context';
+import { useTheme } from '@/hooks/use-theme';
+import { Bell, Search, Menu, X, ChevronDown, LogOut, Database, FileDigit } from 'lucide-react';
 import BottomNav from '@/components/bottom-nav';
 import HamburgerMenu from '@/components/hamburger-menu';
 
@@ -11,6 +13,7 @@ const AppShell = ({ children, onSearchOpen }) => {
   const [location] = useLocation();
   const isMobile = useIsMobile();
   const { currentUser, logout } = useAuth();
+  const { useMockData } = useDataMode();
   const [showSidebar, setShowSidebar] = useState(true);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -159,6 +162,20 @@ const AppShell = ({ children, onSearchOpen }) => {
             </Link>
           </div>
           
+          {/* Data Mode Indicator (Desktop) */}
+          <div className="hidden lg:flex items-center mr-auto">
+            <div className={`flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+              useMockData 
+                ? 'bg-amber-600/20 text-amber-500 border border-amber-800' 
+                : 'bg-green-600/20 text-green-500 border border-green-800'
+            }`}>
+              {useMockData 
+                ? <FileDigit className="h-3 w-3 mr-1" /> 
+                : <Database className="h-3 w-3 mr-1" />}
+              {useMockData ? 'Demo Mode' : 'Real-time Data'}
+            </div>
+          </div>
+          
           {/* Search and Notifications (Desktop) */}
           <div className="hidden lg:flex items-center space-x-2">
             <button
@@ -172,6 +189,20 @@ const AppShell = ({ children, onSearchOpen }) => {
             </button>
           </div>
           
+          {/* Mobile: Data Mode Indicator */}
+          <div className="flex-1 flex justify-center lg:hidden">
+            <div className={`flex items-center px-2 py-1 rounded-full text-[10px] font-medium ${
+              useMockData 
+                ? 'bg-amber-600/20 text-amber-500 border border-amber-800' 
+                : 'bg-green-600/20 text-green-500 border border-green-800'
+            }`}>
+              {useMockData 
+                ? <FileDigit className="h-3 w-3 mr-1" /> 
+                : <Database className="h-3 w-3 mr-1" />}
+              {useMockData ? 'Demo Mode' : 'Real-time'}
+            </div>
+          </div>
+        
           {/* Mobile: Search and Notifications */}
           <div className="flex items-center space-x-3 lg:hidden">
             <button
