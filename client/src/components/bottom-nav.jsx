@@ -1,27 +1,26 @@
-
-import React from 'react';
-import { Link, useLocation } from 'wouter';
-import { Menu, Search } from 'lucide-react';
-import VoiceControl from './voice-control';
-import { useIsMobile } from '@/hooks/use-mobile';
+import React from "react";
+import { Link, useLocation } from "wouter";
+import { Menu, Search } from "lucide-react";
+import VoiceControl from "./voice-control";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
   const [location] = useLocation();
   const isMobile = useIsMobile();
 
   const navItems = [
-    { path: '/dashboard', icon: 'ri-dashboard-line', label: 'Home' },
-    { path: '/devices', icon: 'ri-device-line', label: 'Devices' },
+    { path: "/dashboard", icon: "ri-dashboard-line", label: "Home" },
+    { path: "/devices", icon: "ri-device-line", label: "Devices" },
     null, // Center spacer for mic button
-    { path: '/notifications', icon: 'ri-notification-3-line', label: 'Status' },
-    { path: '/settings', icon: 'ri-settings-3-line', label: 'Settings' }
+    { path: "/notifications", icon: "ri-notification-3-line", label: "Status" },
+    { path: "/settings", icon: "ri-settings-3-line", label: "Settings" },
   ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-[#1e1e2e] shadow-lg border-t border-gray-800 z-40 lg:hidden">
       <div className="flex items-center justify-between h-16 px-4 max-w-screen-xl mx-auto relative">
         {/* Left side menu button */}
-        <button 
+        <button
           onClick={onMenuOpen}
           className="flex flex-col items-center justify-center w-12 h-12 text-gray-400"
         >
@@ -33,32 +32,48 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
           {navItems.map((item, index) => {
             if (item === null) {
               return (
-                <div key="mic-button" className="flex items-center justify-center px-2 relative -top-5">
+                <div
+                  key="mic-button"
+                  className="flex items-center justify-center px-2 relative -top-5"
+                >
                   <VoiceControl />
                 </div>
               );
             }
 
-            const isActive = location === item.path || 
-                           (item.path === '/dashboard' && location === '/');
+            const isActive =
+              location === item.path ||
+              (item.path === "/dashboard" && location === "/");
 
             return (
               <Link key={item.path} href={item.path}>
-                <a className="flex flex-col items-center px-4">
-                  <div className={`p-2 rounded-full ${isActive ? 'bg-[#2563eb]/10' : ''}`}>
-                    <i className={`${item.icon} text-xl ${isActive ? 'text-[#2563eb]' : 'text-gray-400'}`} />
+                <div className="flex flex-col items-center px-4 cursor-pointer">
+                  <div
+                    className={`p-2 rounded-full ${
+                      isActive ? "bg-[#2563eb]/10" : ""
+                    }`}
+                  >
+                    <i
+                      className={`${item.icon} text-xl ${
+                        isActive ? "text-[#2563eb]" : "text-gray-400"
+                      }`}
+                    />
                   </div>
-                  <span className={`text-xs mt-1 ${isActive ? 'text-[#2563eb]' : 'text-gray-400'}`}>
+                  <span
+                    className={`text-xs mt-1 ${
+                      isActive ? "text-[#2563eb]" : "text-gray-400"
+                    }`}
+                  >
                     {item.label}
                   </span>
-                </a>
+                </div>
               </Link>
             );
           })}
         </div>
 
         {/* Right side search button */}
-        <button 
+        <button
           onClick={onSearchOpen}
           className="flex flex-col items-center justify-center w-12 h-12 text-gray-400"
         >
