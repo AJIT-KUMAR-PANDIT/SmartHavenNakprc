@@ -25,8 +25,10 @@ import Notification from "@/components/ui/notification";
 import { AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth.jsx";
 import { ThemeProvider } from "@/hooks/use-theme.jsx";
+import { DataModeProvider } from "@/contexts/data-mode-context";
 import UniversalSearch from "@/components/universal-search";
 import VoiceControl from "@/components/voice-control";
+import AppGuide, { GuideButton } from "@/components/app-guide";
 
 function Router() {
   const { isAuthenticated } = useAuth();
@@ -65,6 +67,10 @@ function Router() {
       
       {/* Voice Control */}
       <VoiceControl />
+      
+      {/* Interactive Guide */}
+      <AppGuide />
+      <GuideButton />
     </AppShell>
   );
 }
@@ -92,17 +98,19 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <div className="app-container">
-            <Toaster />
-            <Router />
-            <Notification 
-              visible={notification.visible}
-              message={notification.message}
-              detail={notification.detail}
-              type={notification.type}
-              onClose={() => setNotification(prev => ({ ...prev, visible: false }))}
-            />
-          </div>
+          <DataModeProvider>
+            <div className="app-container">
+              <Toaster />
+              <Router />
+              <Notification 
+                visible={notification.visible}
+                message={notification.message}
+                detail={notification.detail}
+                type={notification.type}
+                onClose={() => setNotification(prev => ({ ...prev, visible: false }))}
+              />
+            </div>
+          </DataModeProvider>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
