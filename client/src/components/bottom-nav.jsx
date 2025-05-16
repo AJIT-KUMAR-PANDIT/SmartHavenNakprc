@@ -33,7 +33,7 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
           {navItems.map((item, index) => {
             if (item === null) {
               return (
-                <div key="mic-button" className="flex items-center justify-center px-2">
+                <div key="mic-button" className="flex items-center justify-center px-2 relative -top-5">
                   <VoiceControl />
                 </div>
               );

@@ -18,7 +18,11 @@ const MobileMenu = ({ isOpen, onClose }) => {
     { path: '/analytics', icon: 'ri-bar-chart-line', label: 'Analytics' },
     { path: '/electricity', icon: 'ri-flashlight-line', label: 'Electricity Monitor' },
     { path: '/logs', icon: 'ri-file-list-3-line', label: 'Logs' },
-    { path: '/settings', icon: 'ri-settings-3-line', label: 'Settings' }
+    { path: '/settings', icon: 'ri-settings-3-line', label: 'Settings' },
+    { path: '/about', icon: 'ri-information-line', label: 'About' },
+    { path: '/customer-care', icon: 'ri-customer-service-line', label: 'Customer Care' },
+    { path: '/my-plan', icon: 'ri-vip-crown-line', label: 'My Plan' },
+    { path: '/notifications', icon: 'ri-notification-line', label: 'Notifications' }
   ];
   
   // Group menu items into sections
