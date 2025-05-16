@@ -1,0 +1,102 @@
+{
+  "demo_devices": [
+    {
+      "id": "dev1",
+      "name": "Living Room Light",
+      "route": "/light/living",
+      "type": "light",
+      "pin": 5,
+      "status": "offline",
+      "lastSeen": null,
+      "brightness": 80
+    },
+    {
+      "id": "dev2",
+      "name": "Kitchen Fan",
+      "route": "/fan/kitchen",
+      "type": "fan",
+      "pin": 8,
+      "status": "offline",
+      "lastSeen": null,
+      "level": 2
+    },
+    {
+      "id": "dev3",
+      "name": "Front Door Lock",
+      "route": "/door/front",
+      "type": "door",
+      "pin": 12,
+      "status": "offline",
+      "lastSeen": null
+    },
+    {
+      "id": "dev4",
+      "name": "Temperature Sensor",
+      "route": "/sensor/temp",
+      "type": "sensor",
+      "pin": 2,
+      "status": "offline",
+      "lastSeen": null,
+      "value": 22.5,
+      "unit": "°C"
+    }
+  ],
+  "demo_routes": [
+    {
+      "id": "route1",
+      "route": "/light/living",
+      "type": "control",
+      "action": "toggle",
+      "method": "POST",
+      "lastAccessed": null
+    },
+    {
+      "id": "route2",
+      "route": "/fan/kitchen",
+      "type": "control",
+      "action": "toggle",
+      "method": "POST",
+      "lastAccessed": null
+    },
+    {
+      "id": "route3",
+      "route": "/door/front",
+      "type": "control",
+      "action": "toggle",
+      "method": "POST",
+      "lastAccessed": null
+    },
+    {
+      "id": "route4",
+      "route": "/sensor/temp",
+      "type": "read",
+      "method": "GET",
+      "lastAccessed": null
+    }
+  ],
+  "default_settings": {
+    "mqtt": {
+      "brokerUrl": "mqtt://localhost",
+      "port": "1883",
+      "username": "",
+      "password": "",
+      "clientId": "smarthaven_client",
+      "autoReconnect": true,
+      "useSSL": false
+    },
+    "notifications": {
+      "showNotifications": true,
+      "notificationSound": true,
+      "errorNotifications": true
+    },
+    "theme": {
+      "darkMode": true,
+      "accentColor": "#2563eb"
+    },
+    "advanced": {
+      "logLevel": "info",
+      "logRetention": "30days",
+      "deviceCheckInterval": "60"
+    }
+  }
+}
