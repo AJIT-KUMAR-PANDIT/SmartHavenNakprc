@@ -1,12 +1,20 @@
+
 import { createContext, useContext, useEffect, useState } from 'react';
 
 const ThemeContext = createContext({
   theme: 'system',
-  setTheme: () => null,
+  setTheme: (theme: string) => {},
+  isDark: false
 });
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState('system');
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const savedTheme = localStorage.getItem('theme') || 'system';
+    setTheme(savedTheme);
+  }, []);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -18,10 +26,14 @@ export function ThemeProvider({ children }) {
     } else {
       root.classList.add(theme);
     }
+    
+    localStorage.setItem('theme', theme);
   }, [theme]);
 
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, isDark }}>
       {children}
     </ThemeContext.Provider>
   );
