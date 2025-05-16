@@ -178,7 +178,7 @@ const UniversalSearch = ({ isOpen, onClose }) => {
           
           {/* Search modal */}
           <motion.div
-            className="fixed top-1/2 left-1/2 w-[95%] md:w-[90%] lg:w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 bg-[#1e1e2e] rounded-xl shadow-2xl z-50 border border-gray-700 overflow-hidden mx-auto"
+            className="fixed top-16 left-1/2 w-[95%] md:w-[90%] lg:w-full max-w-2xl -translate-x-1/2 bg-[#1e1e2e] rounded-xl shadow-2xl z-50 border border-gray-700 overflow-hidden mx-auto"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
