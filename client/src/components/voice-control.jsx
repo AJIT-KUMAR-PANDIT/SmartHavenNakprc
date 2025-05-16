@@ -6,6 +6,9 @@ import { useDevices } from '@/hooks/use-devices';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const VoiceControl = () => {
+  const isMobile = useIsMobile();
+  const positionClass = isMobile ? '' : 'fixed right-8 bottom-[121px]';
+
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [feedback, setFeedback] = useState('');
@@ -13,7 +16,7 @@ const VoiceControl = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [, navigate] = useLocation();
   const { devices, controlDevice } = useDevices();
-  const isMobile = useIsMobile();
+
 
   const recognitionRef = useRef(null);
 
@@ -109,6 +112,7 @@ const VoiceControl = () => {
 
   return (
     <>
+      <div className={`relative ${positionClass}`}>
       {/* Mic button - positioned differently for mobile and desktop */}
       <button
         onClick={toggleListening}
@@ -129,6 +133,7 @@ const VoiceControl = () => {
           </>
         )}
       </button>
+      </div>
 
       {/* Voice transcript overlay */}
       <AnimatePresence>
