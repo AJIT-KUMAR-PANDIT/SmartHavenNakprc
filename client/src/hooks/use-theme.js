@@ -1,1 +1,0 @@
-// This file is being moved to use-theme.jsx to support JSX syntax

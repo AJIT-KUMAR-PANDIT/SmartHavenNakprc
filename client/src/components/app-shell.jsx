@@ -4,7 +4,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/use-auth';
 import { useDataMode } from '@/contexts/data-mode-context';
-import { useTheme } from '@/hooks/use-theme';
+import { useTheme } from '@/hooks/use-theme.jsx';
 import { Bell, Search, Menu, X, ChevronDown, LogOut, Database, FileDigit } from 'lucide-react';
 import BottomNav from '@/components/bottom-nav';
 import HamburgerMenu from '@/components/hamburger-menu';

@@ -3,7 +3,7 @@ import { mockData } from '@/lib/mock-data';
 import * as dbService from '@/lib/db';
 
 // Create context for data mode (mock vs real)
-const DataModeContext = createContext();
+const DataModeContext = createContext(null);
 
 export function DataModeProvider({ children }) {
   const [useMockData, setUseMockData] = useState(false); // Default to real data
@@ -216,7 +216,7 @@ export function DataModeProvider({ children }) {
 export function useDataMode() {
   const context = useContext(DataModeContext);
   
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useDataMode must be used within a DataModeProvider');
   }
   
