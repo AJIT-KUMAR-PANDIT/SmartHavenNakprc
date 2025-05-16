@@ -3,18 +3,15 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 const ThemeContext = createContext({
   theme: 'system',
-  setTheme: (theme: string) => {},
+  setTheme: () => {},
   isDark: false
 });
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('system');
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    const savedTheme = localStorage.getItem('theme') || 'system';
-    setTheme(savedTheme);
-  }, []);
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    return saved || 'system';
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
