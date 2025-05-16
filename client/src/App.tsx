@@ -97,9 +97,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <DataModeProvider>
-            <AuthProvider>
-              <div className="app-container">
+          <AuthProvider>
+            <DataModeProvider>
+              <div className="app-container dark:bg-[#121218]">
                 <Toaster />
                 <Router />
                 <Notification 
