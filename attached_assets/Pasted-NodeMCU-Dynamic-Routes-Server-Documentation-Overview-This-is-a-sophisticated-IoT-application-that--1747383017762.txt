@@ -1,0 +1,132 @@
+NodeMCU Dynamic Routes Server Documentation
+Overview
+This is a sophisticated IoT application that creates a configurable web server on an ESP8266 microcontroller with the following features:
+
+Dual HTTP/HTTPS servers - Runs on ports 80 and 443
+mDNS support - Makes the device accessible via a friendly name (nakprc.local)
+Dynamic route configuration - Routes can be added/modified/deleted at runtime
+IoT device control - Can register and control physical devices connected to GPIO pins
+Persistent storage - Uses SPIFFS filesystem to store configurations
+Technical Documentation
+Code Structure Analysis
+The code has several functional components:
+
+Setup and Configuration: WiFi credentials setup, web server initialization (both HTTP and HTTPS), self-signed certificate configuration for HTTPS, mDNS configuration for local network discovery.
+Route Management: Functions to store, update, and delete routes. Route configuration persists in a JSON file stored on SPIFFS. Routes can represent either standard web endpoints or physical devices.
+Device Control System: Register IoT devices with specific GPIO pins. Each device gets automatically generated control routes (on/off endpoints). Device state is maintained and persisted.
+Request Queue System: Async request handling using a queue to prevent blocking operations. Ensures the device remains responsive even during complex operations.
+Key Functions
+controlDevice:
+Controls a device based on the route and command.
+
+void controlDevice(String route, String command) {
+    // Parses the route to extract device information
+    // Controls the device based on the command (on/off)
+}
+                        
+processQueue:
+Processes the request queue asynchronously to ensure the device remains responsive.
+
+void processQueue() {
+    // Processes each request in the queue
+    // Ensures non-blocking operation
+}
+                        
+loadStoredRoutes:
+Loads routes from the SPIFFS filesystem.
+
+void loadStoredRoutes() {
+    // Loads routes from the JSON file stored in SPIFFS
+    // Registers the routes with the server
+}
+                        
+saveRoute:
+Saves or updates routes to the SPIFFS filesystem.
+
+void saveRoute(String route, String action, JsonObject deviceConfig = JsonObject()) {
+    // Saves the route and action to the JSON file
+    // Registers the route with the server
+}
+                        
+updateWiFiCredentials:
+Updates WiFi credentials and reconnects to the network.
+
+void updateWiFiCredentials(String newSsid, String newPassword) {
+    // Updates the WiFi credentials
+    // Reconnects to the WiFi network
+}
+                        
+How to Use
+Setting Up
+To set up the NodeMCU Dynamic Routes Server:
+
+Upload the provided code to your ESP8266 microcontroller.
+Ensure the SPIFFS filesystem is mounted and contains the necessary files.
+Connect to the WiFi network using the provided credentials.
+Using the Server
+Once the server is running, you can interact with it using the following endpoints:
+
+/:
+Welcome route that lists available routes.
+
+/api:
+POST endpoint to store new routes or register devices. Example JSON body for storing a route:
+
+{
+    "route": "YOUR_ROUTE",
+    "action": "YOUR_ACTION"
+}
+                        
+/auth:
+POST endpoint to update WiFi credentials. Example JSON body:
+
+{
+    "ssid": "YOUR_SSID",
+    "password": "YOUR_PASSWORD"
+}
+                        
+/sethttp:
+GET endpoint to enable or disable HTTP mode. Example:
+
+/sethttp?mode=on
+/sethttp?mode=off
+                        
+Examples
+Here are some example requests:
+
+To store a new route:
+
+POST /api with JSON body:
+{
+    "route": "YOUR_ROUTE",
+    "action": "YOUR_ACTION"
+}
+                        
+To register a device:
+
+POST /api with JSON body:
+{
+    "route": "YOUR_ROUTE",
+    "name": "DEVICE_NAME",
+    "pin": GPIO_PIN,
+    "type": "DEVICE_TYPE"
+}
+                        
+To update WiFi credentials:
+
+POST /auth with JSON body:
+{
+    "ssid": "YOUR_SSID",
+    "password": "YOUR_PASSWORD"
+}
+                        
+To enable HTTP mode:
+
+GET /sethttp?mode=on
+                        
+To disable HTTP mode:
+
+GET /sethttp?mode=off
+                        
+Conclusion
+This documentation provides an overview of the NodeMCU Dynamic Routes Server, its technical details, and how to use it. For further customization or advanced usage, refer to the code comments and adjust the configurations as needed.
