@@ -21,7 +21,7 @@ const VOICE_COMMANDS = {
         'logs': '/logs',
         'settings': '/settings'
       };
-      
+
       if (pathMap[page]) {
         navigate(pathMap[page]);
         return `Navigating to ${page}`;
@@ -34,12 +34,12 @@ const VOICE_COMMANDS = {
     action: (matches, navigate, { devices, controlDevice }) => {
       const action = matches[1].toLowerCase();
       const deviceName = matches[2].trim().toLowerCase();
-      
+
       const device = devices.find(d => 
         d.name.toLowerCase().includes(deviceName) || 
         d.type.toLowerCase().includes(deviceName)
       );
-      
+
       if (device) {
         controlDevice(device.id, action === 'on' ? 'turnOn' : 'turnOff');
         return `Turning ${action} ${device.name}`;
@@ -64,9 +64,9 @@ const VoiceControl = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [, navigate] = useLocation();
   const { devices, controlDevice } = useDevices();
-  
+
   const recognitionRef = useRef(null);
-  
+
   // Initialize speech recognition
   useEffect(() => {
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
@@ -75,30 +75,30 @@ const VoiceControl = () => {
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
       recognitionRef.current.lang = 'en-US';
-      
+
       recognitionRef.current.onstart = () => {
         setIsListening(true);
         setTranscript('Listening...');
         setIsAnimating(true);
       };
-      
+
       recognitionRef.current.onresult = (event) => {
         const current = event.resultIndex;
         const result = event.results[current][0].transcript;
         setTranscript(result);
       };
-      
+
       recognitionRef.current.onend = () => {
         setIsListening(false);
         processCommand(transcript);
       };
-      
+
       recognitionRef.current.onerror = (event) => {
         console.error('Speech recognition error', event.error);
         setIsListening(false);
         setFeedback(`Error: ${event.error}`);
         setShowFeedback(true);
-        
+
         setTimeout(() => {
           setShowFeedback(false);
         }, 3000);
@@ -107,18 +107,18 @@ const VoiceControl = () => {
       // Speech recognition not supported
       console.warn('Speech recognition not supported in this browser');
     }
-    
+
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.abort();
       }
     };
   }, []);
-  
+
   // Process transcript when speech recognition ends
   const processCommand = (text) => {
     if (!text || text === 'Listening...') return;
-    
+
     // Check for command matches
     for (const [commandType, command] of Object.entries(VOICE_COMMANDS)) {
       const matches = text.match(command.regex);
@@ -126,24 +126,24 @@ const VoiceControl = () => {
         const response = command.action(matches, navigate, { devices, controlDevice });
         setFeedback(response);
         setShowFeedback(true);
-        
+
         setTimeout(() => {
           setShowFeedback(false);
         }, 3000);
-        
+
         return;
       }
     }
-    
+
     // No command matched
     setFeedback("Sorry, I didn't understand that command");
     setShowFeedback(true);
-    
+
     setTimeout(() => {
       setShowFeedback(false);
     }, 3000);
   };
-  
+
   // Toggle listening
   const toggleListening = () => {
     if (isListening) {
@@ -156,9 +156,9 @@ const VoiceControl = () => {
       }
     }
   };
-  
+
   return (
-    <>
+    <div className="relative flex justify-center items-center md:fixed md:bottom-8 md:right-8">
       {/* Floating microphone button */}
       <button
         onClick={toggleListening}
@@ -171,7 +171,7 @@ const VoiceControl = () => {
         ) : (
           <Mic className="h-6 w-6 text-white" />
         )}
-        
+
         {/* Animated rings when active */}
         {isListening && (
           <>
@@ -180,7 +180,7 @@ const VoiceControl = () => {
           </>
         )}
       </button>
-      
+
       {/* Voice transcript overlay */}
       <AnimatePresence>
         {isListening && (
@@ -203,11 +203,11 @@ const VoiceControl = () => {
                   <X className="h-4 w-4" />
                 </button>
               </div>
-              
+
               <div className="p-3 bg-gray-800 rounded-lg text-gray-200 min-h-[40px]">
                 {transcript}
               </div>
-              
+
               <div className="mt-2 text-xs text-gray-400">
                 Try saying: "Turn on living room lights" or "Go to dashboard"
               </div>
@@ -215,7 +215,7 @@ const VoiceControl = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      
+
       {/* Feedback toast */}
       <AnimatePresence>
         {showFeedback && (
@@ -231,7 +231,7 @@ const VoiceControl = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 

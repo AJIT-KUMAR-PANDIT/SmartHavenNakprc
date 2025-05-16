@@ -5,7 +5,7 @@ import { Menu, Search } from 'lucide-react';
 
 const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
   const [location] = useLocation();
-  
+
   // Primary navigation items for bottom bar
   const navItems = [
     { path: '/dashboard', icon: 'ri-dashboard-line', label: 'Home' },
@@ -14,10 +14,10 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
     { path: '/electricity', icon: 'ri-flashlight-line', label: 'Energy' },
     { path: '/settings', icon: 'ri-settings-3-line', label: 'Settings' }
   ];
-  
+
   // Calculate center position for floating mic button
   const centerIndex = Math.floor(navItems.length / 2);
-  
+
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-[#1e1e2e] shadow-lg border-t border-gray-800 z-40 lg:hidden">
       <div className="flex justify-between items-center h-16 px-4">
@@ -28,18 +28,18 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
         >
           <Menu className="h-6 w-6" />
         </button>
-        
+
         {/* Main navigation items */}
         <div className="flex justify-center items-center space-x-6">
           {navItems.map((item, index) => {
             const isActive = location === item.path || 
                              (item.path === '/dashboard' && location === '/');
-                             
+
             // Skip rendering the middle item to make space for the floating button
             if (index === centerIndex) {
               return <div key={item.path} className="w-12" />; // Spacer
             }
-                             
+
             return (
               <Link key={item.path} href={item.path}>
                 <a className="flex flex-col items-center">
@@ -54,7 +54,7 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
             );
           })}
         </div>
-        
+
         {/* Right side search button */}
         <button 
           onClick={onSearchOpen}
@@ -63,7 +63,7 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
           <Search className="h-6 w-6" />
         </button>
       </div>
-      
+
       {/* Floating microphone button will be rendered outside this component */}
     </div>
   );

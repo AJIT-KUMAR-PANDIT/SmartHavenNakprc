@@ -20,6 +20,10 @@ const Logs = () => {
     getLogsByDate,
     filter 
   } = useLogs();
+
+  useEffect(() => {
+    loadLogs();
+  }, []);
   
   const [downloadFormat, setDownloadFormat] = useState('json');
   const [activeTab, setActiveTab] = useState('list');
