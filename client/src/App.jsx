@@ -61,13 +61,16 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </AnimatePresence>
-      
+
       {/* Universal Search Modal */}
-      <UniversalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-      
+      <UniversalSearch
+        isOpen={searchOpen}
+        onClose={() => setSearchOpen(false)}
+      />
+
       {/* Voice Control */}
       <VoiceControl />
-      
+
       {/* Interactive Guide */}
       <AppGuide />
       <GuideButton />
@@ -76,22 +79,28 @@ function Router() {
 }
 
 function App() {
-  const [notification, setNotification] = useState({ visible: false, message: "", detail: "", type: "success" });
+  const [notification, setNotification] = useState({
+    visible: false,
+    message: "",
+    detail: "",
+    type: "success",
+  });
 
   // Function to show notifications - will be used by the notification context
   const showNotification = (message, detail, type = "success") => {
     setNotification({ visible: true, message, detail, type });
-    
+
     // Auto-hide after 5 seconds
     setTimeout(() => {
-      setNotification(prev => ({ ...prev, visible: false }));
+      setNotification((prev) => ({ ...prev, visible: false }));
     }, 5000);
   };
 
   // Create notification context
   const notificationContext = {
     showNotification,
-    hideNotification: () => setNotification(prev => ({ ...prev, visible: false }))
+    hideNotification: () =>
+      setNotification((prev) => ({ ...prev, visible: false })),
   };
 
   return (
@@ -103,12 +112,14 @@ function App() {
               <div className="app-container min-h-screen bg-white dark:bg-[#121218] transition-colors duration-200">
                 <Toaster />
                 <Router />
-                <Notification 
+                <Notification
                   visible={notification.visible}
                   message={notification.message}
                   detail={notification.detail}
                   type={notification.type}
-                  onClose={() => setNotification(prev => ({ ...prev, visible: false }))}
+                  onClose={() =>
+                    setNotification((prev) => ({ ...prev, visible: false }))
+                  }
                 />
               </div>
             </AuthProvider>
