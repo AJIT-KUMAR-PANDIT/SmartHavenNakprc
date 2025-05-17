@@ -4,6 +4,11 @@ import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 export default defineConfig({
+  server: {
+    allowedHosts: [
+      "9493-2401-4900-1c36-4bf7-c4b8-cef3-1e20-fef7.ngrok-free.app",
+    ],
+  },
   plugins: [
     react(),
     runtimeErrorOverlay(),
@@ -11,7 +16,7 @@ export default defineConfig({
     process.env.REPL_ID !== undefined
       ? [
           await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
+            m.cartographer()
           ),
         ]
       : []),
