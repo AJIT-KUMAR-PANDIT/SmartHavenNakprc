@@ -28,13 +28,13 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
         </button>
 
         {/* Main navigation items */}
-        <div className="flex-1 flex justify-center items-center">
+        <div className="flex-1 flex justify-evenly items-center">
           {navItems.map((item, index) => {
             if (item === null) {
               return (
                 <div
                   key="mic-button"
-                  className="flex items-center justify-center px-2 relative -top-5"
+                  className="flex items-center justify-center relative -top-5"
                 >
                   <VoiceControl />
                 </div>
@@ -47,7 +47,7 @@ const BottomNav = ({ onSearchOpen, onMenuOpen }) => {
 
             return (
               <Link key={item.path} href={item.path}>
-                <div className="flex flex-col items-center px-4 cursor-pointer">
+                <div className="flex flex-col items-center cursor-pointer">
                   <div
                     className={`p-2 rounded-full ${
                       isActive ? "bg-[#2563eb]/10" : ""
