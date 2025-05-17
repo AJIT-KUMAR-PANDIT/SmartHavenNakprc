@@ -445,7 +445,7 @@ export function getAllScenes() {
   });
 }
 
-export function activateScene(id) {
+export function activateScene(id, state) {
   return initializeDB().then(async () => {
     const scene = scenes.findOne({ id });
     if (!scene) return false;
@@ -463,7 +463,7 @@ export function activateScene(id) {
         // Here you would typically send a command to the device's route
         // Use MQTT to control the device
         try {
-          await controlDevice(fullDevice.id, "on");
+          await controlDevice(fullDevice.id, state);
         } catch (mqttError) {
           console.error(
             `Failed to control device ${fullDevice.name} via MQTT:`,
@@ -477,7 +477,10 @@ export function activateScene(id) {
       }
     }
 
-    addLog("Scene Activated", `Activated scene ${scene.name}`);
+    addLog(
+      "Scene Activation",
+      `${state === "on" ? "Activated" : "Deactivated"} scene ${scene.name}`
+    );
     return true;
   });
 }

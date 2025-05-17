@@ -5,6 +5,7 @@ import useScenes from "@/hooks/use-scenes"; // Import the new hook
 import SceneModal from "@/components/scene-modal"; // Import the new modal
 
 const SceneCard = ({ scene, onActivate, onEdit, onDelete }) => {
+  const [isActive, setIsActive] = useState(false); // State to track if the scene is active
   return (
     <div className="bg-[#1e1e2e] rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg border border-gray-800">
       <div className="p-5">
@@ -41,11 +42,26 @@ const SceneCard = ({ scene, onActivate, onEdit, onDelete }) => {
         </div>
 
         <button
-          onClick={() => onActivate(scene.id)}
-          className="w-full py-2 mt-2 bg-[#2563eb] hover:bg-[#1e40af] transition-colors rounded-md flex justify-center items-center"
+          onClick={async () => {
+            const newState = isActive ? "off" : "on";
+            try {
+              await onActivate(scene.id, newState);
+              setIsActive(!isActive);
+            } catch (err) {
+              // Error handling is already in parent component, just log or handle locally if needed
+              console.error(`Failed to ${newState} scene:`, err);
+            }
+          }}
+          className={`w-full py-2 mt-2 rounded-md flex justify-center items-center ${
+            isActive
+              ? "bg-red-600 hover:bg-red-700"
+              : "bg-[#2563eb] hover:bg-[#1e40af]"
+          } transition-colors`}
         >
-          <i className="ri-play-fill mr-2"></i>
-          Activate Scene
+          <i
+            className={`${isActive ? "ri-stop-fill" : "ri-play-fill"} mr-2`}
+          ></i>
+          {isActive ? "Deactivate Scene" : "Activate Scene"}
         </button>
       </div>
     </div>
@@ -130,6 +146,7 @@ export default function Scenes() {
         description: `Failed to activate scene: ${err.message}`,
         variant: "destructive",
       });
+      // No need to revert state here, the parent handler already shows the toast
     }
   };
 
