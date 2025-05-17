@@ -463,7 +463,7 @@ export function activateScene(id) {
         // For the mock service, we'll just log it and potentially update device status
         // await apiRequest('POST', fullDevice.route, { state: 'on' }); // Example API call if not using local control
         // Or update status directly in DB if simulating local control
-        // updateDeviceStatus(fullDevice.id, 'on'); // Example local DB update
+        updateDevice(fullDevice.id, { state: "on" }); // Update device status to 'on'
       }
     }
 
