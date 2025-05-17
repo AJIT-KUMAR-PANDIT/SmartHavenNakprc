@@ -277,7 +277,9 @@ const DeviceModal = ({
                             <SelectItem value="no-room">No Room</SelectItem>
                             {/* Rooms will be mapped here */}
                             {rooms
-                              .filter((room) => room && room.id) // Filter out rooms with no id
+                              .filter(
+                                (room) => room && room.id && room.id !== ""
+                              ) // Filter out rooms with no id or empty string id
                               .map((room) => (
                                 <SelectItem key={room.id} value={room.id}>
                                   {room.name}

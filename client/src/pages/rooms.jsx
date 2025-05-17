@@ -6,12 +6,32 @@ import useRooms from "@/hooks/use-rooms";
 import useDevices from "@/hooks/use-devices";
 import RoomModal from "@/components/room-modal";
 import DeviceCard from "@/components/ui/device-card";
+import DeviceModal from "@/components/device-modal"; // Import DeviceModal
 
-const RoomCard = ({ room, onEdit, onDelete, roomDevices }) => {
+const RoomCard = ({
+  room,
+  onEdit,
+  onDelete,
+  roomDevices,
+  onEditDevice,
+  onDeleteDevice,
+}) => {
   const { data: devices } = useQuery({
     queryKey: ["/api/devices"],
     refetchOnWindowFocus: false,
   });
+
+  const { toggleDevice } = useDevices(); // Get toggleDevice from useDevices hook
+  const [showDevices, setShowDevices] = useState(false); // State to control device list visibility
+
+  const handleToggleAll = async (command) => {
+    for (const device of roomDevices) {
+      // Only toggle devices that are toggleable (e.g., switch, light, fan, door)
+      if (["switch", "light", "fan", "door"].includes(device.type)) {
+        await toggleDevice(device.id, command);
+      }
+    }
+  };
 
   return (
     <div className="bg-[#1e1e2e] rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg border border-gray-800">
@@ -85,15 +105,46 @@ const RoomCard = ({ room, onEdit, onDelete, roomDevices }) => {
         </div>
 
         <div className="grid grid-cols-2 gap-2">
-          <button className="py-2 bg-[#1e1e2e] hover:bg-gray-800 transition-colors border border-gray-700 rounded-md flex justify-center items-center">
-            <i className="ri-lightbulb-line mr-2"></i>
-            All Lights
+          <button
+            className="py-2 bg-[#1e1e2e] hover:bg-gray-800 transition-colors border border-gray-700 rounded-md flex justify-center items-center"
+            onClick={() => handleToggleAll("on")}
+          >
+            <i className="ri-toggle-line mr-2"></i>
+            Toggle All On
           </button>
-          <button className="py-2 bg-[#2563eb] hover:bg-[#1e40af] transition-colors rounded-md flex justify-center items-center">
-            <i className="ri-dashboard-3-line mr-2"></i>
-            Controls
+          <button
+            className="py-2 bg-[#1e1e2e] hover:bg-gray-800 transition-colors border border-gray-700 rounded-md flex justify-center items-center"
+            onClick={() => handleToggleAll("off")}
+          >
+            <i className="ri-toggle-line mr-2"></i>
+            Toggle All Off
+          </button>
+          <button
+            className="py-2 bg-[#2563eb] hover:bg-[#1e40af] transition-colors rounded-md flex justify-center items-center col-span-2"
+            onClick={() => setShowDevices(!showDevices)}
+          >
+            <i
+              className={`mr-2 ${
+                showDevices ? "ri-eye-off-line" : "ri-eye-line"
+              }`}
+            ></i>
+            {showDevices ? "Hide Devices" : "View Devices"}
           </button>
         </div>
+
+        {showDevices && (
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {roomDevices.map((device) => (
+              <DeviceCard
+                key={device.id}
+                device={device}
+                onToggle={toggleDevice}
+                onEdit={onEditDevice} // Pass the correct prop for editing devices
+                onDelete={onDeleteDevice}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -138,10 +189,80 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+// Component to render rooms and devices
+const RenderRoomsAndDevices = ({
+  rooms,
+  devicesByRoom,
+  handleEditRoom,
+  handleDeleteRoom,
+  handleEditDevice,
+  handleDeleteDevice,
+  toggleDevice,
+}) => {
+  return (
+    <>
+      {rooms && rooms.length > 0 ? (
+        // Render rooms with their associated devices
+        rooms.map((room) => (
+          <RoomCard
+            key={room.id}
+            room={room}
+            onEdit={handleEditRoom}
+            onDelete={handleDeleteRoom}
+            roomDevices={devicesByRoom[room.id] || []}
+            onEditDevice={handleEditDevice}
+            onDeleteDevice={handleDeleteDevice}
+          />
+        ))
+      ) : (
+        <div className="col-span-full bg-[#1e1e2e] rounded-xl p-8 text-center border border-gray-800">
+          <div className="text-6xl text-gray-600 mb-4">
+            <i className="ri-home-line"></i>
+          </div>
+          <h3 className="text-xl font-medium mb-2">No Rooms Added Yet</h3>
+          <p className="text-gray-400 mb-6">
+            Organize your smart home by adding rooms to group your devices.
+          </p>
+          <button
+            onClick={() => setShowForm(true)}
+            className="px-4 py-2 bg-[#2563eb] hover:bg-[#1e40af] rounded-md inline-flex items-center"
+          >
+            <i className="ri-add-line mr-2"></i>
+            Add Your First Room
+          </button>
+        </div>
+      )}
+      {/* Render unassigned devices if any */}
+      {devicesByRoom["unassigned"] &&
+        devicesByRoom["unassigned"].length > 0 && (
+          <div className="col-span-full">
+            <h2 className="text-xl font-bold mb-4">Unassigned Devices</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {devicesByRoom["unassigned"].map((device) => (
+                <DeviceCard
+                  key={device.id}
+                  device={device}
+                  // Pass necessary props for device actions if needed
+                  onToggle={toggleDevice}
+                  onEdit={handleEditDevice}
+                  onDelete={handleDeleteDevice}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+    </>
+  );
+};
+
 export default function Rooms() {
   const [showForm, setShowForm] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
   const { toast } = useToast();
+
+  // Add state for device modal
+  const [deviceModalOpen, setDeviceModalOpen] = useState(false);
+  const [selectedDevice, setSelectedDevice] = useState(null);
 
   // Use the new useRooms hook
   const {
@@ -158,6 +279,9 @@ export default function Rooms() {
     devices,
     isLoading: isLoadingDevices,
     error: errorDevices,
+    editDevice,
+    deleteDevice,
+    toggleDevice,
   } = useDevices();
 
   // Group devices by room
@@ -226,6 +350,42 @@ export default function Rooms() {
     }
   };
 
+  const handleEditDevice = (device) => {
+    // Logic to edit a device (e.g., open a modal)
+    // This might involve setting state to show a device-specific modal
+    // console.log("Edit device:", device);
+    setSelectedDevice(device);
+    setDeviceModalOpen(true);
+  };
+
+  const handleDeleteDevice = async (deviceId) => {
+    if (window.confirm("Are you sure you want to delete this device?")) {
+      try {
+        await deleteDevice(deviceId);
+        toast({
+          title: "Success",
+          description: "Device deleted successfully",
+        });
+      } catch (err) {
+        toast({
+          title: "Error",
+          description: `Failed to delete device: ${err.message}`,
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const handleSaveDevice = async (deviceData, deviceId = null) => {
+    if (deviceId) {
+      await editDevice(deviceId, deviceData);
+    } else {
+      await createDevice(deviceData);
+    }
+    setSelectedDevice(null);
+    setDeviceModalOpen(false);
+  };
+
   const isLoading = isLoadingRooms || isLoadingDevices;
   const error = errorRooms || errorDevices;
 
@@ -264,55 +424,26 @@ export default function Rooms() {
             <p className="mt-4 text-red-300 text-lg">{error}</p>
             {/* Add a retry button if needed */}
           </div>
-        ) : rooms && rooms.length > 0 ? (
-          // Render rooms with their associated devices
-          rooms.map((room) => (
-            <RoomCard
-              key={room.id}
-              room={room}
-              onEdit={handleEditRoom}
-              onDelete={handleDeleteRoom}
-              roomDevices={devicesByRoom[room.id] || []}
-            />
-          ))
         ) : (
-          <div className="col-span-full bg-[#1e1e2e] rounded-xl p-8 text-center border border-gray-800">
-            <div className="text-6xl text-gray-600 mb-4">
-              <i className="ri-home-line"></i>
-            </div>
-            <h3 className="text-xl font-medium mb-2">No Rooms Added Yet</h3>
-            <p className="text-gray-400 mb-6">
-              Organize your smart home by adding rooms to group your devices.
-            </p>
-            <button
-              onClick={() => setShowForm(true)}
-              className="px-4 py-2 bg-[#2563eb] hover:bg-[#1e40af] rounded-md inline-flex items-center"
-            >
-              <i className="ri-add-line mr-2"></i>
-              Add Your First Room
-            </button>
-          </div>
+          <RenderRoomsAndDevices
+            rooms={rooms}
+            devicesByRoom={devicesByRoom}
+            handleEditRoom={handleEditRoom}
+            handleDeleteRoom={handleDeleteRoom}
+            handleEditDevice={handleEditDevice}
+            handleDeleteDevice={handleDeleteDevice}
+            toggleDevice={toggleDevice}
+          />
         )}
-        {/* Render unassigned devices if any */}
-        {devicesByRoom["unassigned"] &&
-          devicesByRoom["unassigned"].length > 0 && (
-            <div className="col-span-full">
-              <h2 className="text-xl font-bold mb-4">Unassigned Devices</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {devicesByRoom["unassigned"].map((device) => (
-                  <DeviceCard
-                    key={device.id}
-                    device={device}
-                    // Pass necessary props for device actions if needed
-                    // onToggle={toggleDevice}
-                    // onEdit={handleEditDevice}
-                    // onDelete={handleDeleteDevice}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
       </div>
+      {/* Add DeviceModal */}
+      <DeviceModal
+        isOpen={deviceModalOpen}
+        onClose={() => setDeviceModalOpen(false)}
+        device={selectedDevice}
+        onSave={handleSaveDevice}
+        rooms={rooms} // Pass rooms to the modal for room assignment
+      />
     </motion.div>
   );
 }
