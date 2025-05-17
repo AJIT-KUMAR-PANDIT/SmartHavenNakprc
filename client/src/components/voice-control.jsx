@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, X, Activity } from 'lucide-react';
-import { useLocation } from 'wouter';
-import { useDevices } from '@/hooks/use-devices';
-import { useIsMobile } from '@/hooks/use-mobile';
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mic, MicOff, X, Activity } from "lucide-react";
+import { useLocation } from "wouter";
+import { useDevices } from "@/hooks/use-devices";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const VoiceControl = () => {
   const [isListening, setIsListening] = useState(false);
-  const [transcript, setTranscript] = useState('');
-  const [feedback, setFeedback] = useState('');
+  const [transcript, setTranscript] = useState("");
+  const [feedback, setFeedback] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [, navigate] = useLocation();
@@ -19,16 +19,17 @@ const VoiceControl = () => {
 
   // Initialize speech recognition
   useEffect(() => {
-    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = 'en-US';
+      recognitionRef.current.lang = "en-US";
 
       recognitionRef.current.onstart = () => {
         setIsListening(true);
-        setTranscript('Listening...');
+        setTranscript("Listening...");
         setIsAnimating(true);
       };
 
@@ -44,7 +45,7 @@ const VoiceControl = () => {
       };
 
       recognitionRef.current.onerror = (event) => {
-        console.error('Speech recognition error', event.error);
+        console.error("Speech recognition error", event.error);
         setIsListening(false);
         setFeedback(`Error: ${event.error}`);
         setShowFeedback(true);
@@ -55,7 +56,7 @@ const VoiceControl = () => {
       };
     } else {
       // Speech recognition not supported
-      console.warn('Speech recognition not supported in this browser');
+      console.warn("Speech recognition not supported in this browser");
     }
 
     return () => {
@@ -67,13 +68,16 @@ const VoiceControl = () => {
 
   // Process transcript when speech recognition ends
   const processCommand = (text) => {
-    if (!text || text === 'Listening...') return;
+    if (!text || text === "Listening...") return;
 
     // Check for command matches
     for (const [commandType, command] of Object.entries(VOICE_COMMANDS)) {
       const matches = text.match(command.regex);
       if (matches) {
-        const response = command.action(matches, navigate, { devices, controlDevice });
+        const response = command.action(matches, navigate, {
+          devices,
+          controlDevice,
+        });
         setFeedback(response);
         setShowFeedback(true);
 
@@ -102,7 +106,7 @@ const VoiceControl = () => {
       try {
         recognitionRef.current.start();
       } catch (error) {
-        console.error('Speech recognition error', error);
+        console.error("Speech recognition error", error);
       }
     }
   };
@@ -113,8 +117,12 @@ const VoiceControl = () => {
       <button
         onClick={toggleListening}
         className={`flex items-center justify-center rounded-full transition-all duration-300
-          ${isListening ? 'bg-red-500' : 'bg-blue-600'}
-          ${isMobile ? 'w-12 h-12' : 'w-12 h-12 hover:scale-105'}`}
+          ${isListening ? "bg-red-500" : "bg-blue-600"}
+          ${
+            isMobile
+              ? "w-12 h-12"
+              : "fixed bottom-[121px] right-4 w-12 h-12 hover:scale-105"
+          }`}
       >
         {isListening ? (
           <MicOff className="h-6 w-6 text-white" />
@@ -145,7 +153,7 @@ const VoiceControl = () => {
                   <Activity className="h-4 w-4 mr-2 text-red-500" />
                   Voice Command
                 </h3>
-                <button 
+                <button
                   onClick={() => recognitionRef.current.stop()}
                   className="text-gray-400 hover:text-white"
                 >
