@@ -27,7 +27,6 @@ import { useAuth, AuthProvider } from "@/hooks/use-auth.jsx";
 import { ThemeProvider } from "@/hooks/use-theme.jsx";
 import { DataModeProvider } from "@/contexts/data-mode-context";
 import UniversalSearch from "@/components/universal-search";
-import VoiceControl from "@/components/voice-control";
 import AppGuide, { GuideButton } from "@/components/app-guide";
 
 function Router() {
@@ -68,9 +67,8 @@ function Router() {
         onClose={() => setSearchOpen(false)}
       />
 
-      {/* Voice Control */}
-      <VoiceControl />
-
+      {/* space*/}
+      <div className="mb-14 "></div>
       {/* Interactive Guide */}
       <AppGuide />
       <GuideButton />
