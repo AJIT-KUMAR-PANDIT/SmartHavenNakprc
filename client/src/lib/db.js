@@ -1,4 +1,5 @@
 import Loki from "lokijs";
+import { controlDevice } from "./mqtt";
 
 // Create a LokiJS database
 let db = null;
@@ -460,10 +461,19 @@ export function activateScene(id) {
           `Activating device ${fullDevice.name} via scene ${scene.name}`
         );
         // Here you would typically send a command to the device's route
-        // For the mock service, we'll just log it and potentially update device status
-        // await apiRequest('POST', fullDevice.route, { state: 'on' }); // Example API call if not using local control
-        // Or update status directly in DB if simulating local control
-        updateDevice(fullDevice.id, { state: "on" }); // Update device status to 'on'
+        // Use MQTT to control the device
+        try {
+          await controlDevice(fullDevice.id, "on");
+        } catch (mqttError) {
+          console.error(
+            `Failed to control device ${fullDevice.name} via MQTT:`,
+            mqttError
+          );
+          addLog(
+            "Scene Activation Error",
+            `Failed to control device ${fullDevice.name} via MQTT: ${mqttError.message}`
+          );
+        }
       }
     }
 

@@ -4,7 +4,7 @@ import {
   addScene,
   updateScene,
   removeScene,
-  activateScene,
+  activateScene as activateSceneFromDb,
 } from "@/lib/db";
 
 const useScenes = () => {
@@ -62,7 +62,7 @@ const useScenes = () => {
     mutationFn: async (id) => {
       // const res = await apiRequest("POST", `/api/scenes/${id}/activate`); // Remove API call
       // return res.json();
-      return activateScene(id); // Use local db function
+      return activateSceneFromDb(id); // Use local db function
     },
     onSuccess: () => {
       // Invalidate devices query as activating a scene updates device states
