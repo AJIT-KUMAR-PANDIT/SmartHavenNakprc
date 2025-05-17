@@ -11,6 +11,7 @@ let routes = null;
 let logs = null;
 let settings = null;
 let rooms = null;
+let scenes = null; // Add scenes collection variable
 
 const DB_NAME = "iotcontrol.db";
 const MAX_LOG_SIZE = 100 * 1024 * 1024; // 100 MB
@@ -61,6 +62,11 @@ export function initializeDB() {
       rooms = db.getCollection("rooms");
       if (rooms === null) {
         rooms = db.addCollection("rooms", { indices: ["id"] });
+      }
+
+      scenes = db.getCollection("scenes"); // Initialize scenes collection
+      if (scenes === null) {
+        scenes = db.addCollection("scenes", { indices: ["id"] });
       }
 
       initialized = true;
@@ -393,4 +399,75 @@ export function importSettings(data) {
 // Utility function to generate a random ID
 function generateId() {
   return Math.random().toString(36).substr(2, 9);
+}
+
+// Scene functions
+export function addScene(sceneData) {
+  return initializeDB().then(() => {
+    const scene = {
+      ...sceneData,
+      id: generateId(),
+      createdAt: new Date(),
+    };
+    const result = scenes.insert(scene);
+    addLog("Scene Added", `Added scene ${scene.name}`);
+    return result;
+  });
+}
+
+export function updateScene(id, sceneData) {
+  return initializeDB().then(() => {
+    const scene = scenes.findOne({ id });
+    if (!scene) return null;
+
+    Object.assign(scene, sceneData);
+    scenes.update(scene);
+    addLog("Scene Updated", `Updated scene ${scene.name}`);
+    return scene;
+  });
+}
+
+export function removeScene(id) {
+  return initializeDB().then(() => {
+    const scene = scenes.findOne({ id });
+    if (!scene) return false;
+
+    scenes.remove(scene);
+    addLog("Scene Removed", `Removed scene ${scene.name}`);
+    return true;
+  });
+}
+
+export function getAllScenes() {
+  return initializeDB().then(() => {
+    return scenes.find();
+  });
+}
+
+export function activateScene(id) {
+  return initializeDB().then(async () => {
+    const scene = scenes.findOne({ id });
+    if (!scene) return false;
+
+    // Simulate activating devices in the scene
+    // In a real scenario, this would interact with device routes
+    for (const device of scene.devices) {
+      // Find the full device object to get its route
+      const fullDevice = devices.findOne({ id: device.id });
+      if (fullDevice) {
+        addLog(
+          "Scene Activation",
+          `Activating device ${fullDevice.name} via scene ${scene.name}`
+        );
+        // Here you would typically send a command to the device's route
+        // For the mock service, we'll just log it and potentially update device status
+        // await apiRequest('POST', fullDevice.route, { state: 'on' }); // Example API call if not using local control
+        // Or update status directly in DB if simulating local control
+        // updateDeviceStatus(fullDevice.id, 'on'); // Example local DB update
+      }
+    }
+
+    addLog("Scene Activated", `Activated scene ${scene.name}`);
+    return true;
+  });
 }
