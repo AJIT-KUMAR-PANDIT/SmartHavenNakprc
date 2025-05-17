@@ -1,4 +1,4 @@
-import Loki from 'lokijs';
+import Loki from "lokijs";
 
 // Create a LokiJS database
 let db = null;
@@ -10,8 +10,9 @@ let devices = null;
 let routes = null;
 let logs = null;
 let settings = null;
+let rooms = null;
 
-const DB_NAME = 'iotcontrol.db';
+const DB_NAME = "iotcontrol.db";
 const MAX_LOG_SIZE = 100 * 1024 * 1024; // 100 MB
 
 // Initialize the database
@@ -26,33 +27,38 @@ export function initializeDB() {
       autoload: true,
       autoloadCallback: databaseInitialize,
       autosave: true,
-      autosaveInterval: 4000
+      autosaveInterval: 4000,
     });
 
     function databaseInitialize() {
-      users = db.getCollection('users');
+      users = db.getCollection("users");
       if (users === null) {
-        users = db.addCollection('users', { indices: ['username'] });
+        users = db.addCollection("users", { indices: ["username"] });
       }
 
-      devices = db.getCollection('devices');
+      devices = db.getCollection("devices");
       if (devices === null) {
-        devices = db.addCollection('devices', { indices: ['id', 'route'] });
+        devices = db.addCollection("devices", { indices: ["id", "route"] });
       }
 
-      routes = db.getCollection('routes');
+      routes = db.getCollection("routes");
       if (routes === null) {
-        routes = db.addCollection('routes', { indices: ['route'] });
+        routes = db.addCollection("routes", { indices: ["route"] });
       }
 
-      logs = db.getCollection('logs');
+      logs = db.getCollection("logs");
       if (logs === null) {
-        logs = db.addCollection('logs', { indices: ['timestamp'] });
+        logs = db.addCollection("logs", { indices: ["timestamp"] });
       }
 
-      settings = db.getCollection('settings');
+      settings = db.getCollection("settings");
       if (settings === null) {
-        settings = db.addCollection('settings');
+        settings = db.addCollection("settings");
+      }
+
+      rooms = db.getCollection("rooms");
+      if (rooms === null) {
+        rooms = db.addCollection("rooms", { indices: ["id"] });
       }
 
       initialized = true;
@@ -95,12 +101,15 @@ export function addDevice(deviceData) {
     const device = {
       ...deviceData,
       id: generateId(),
-      status: 'offline',
+      status: "offline",
       createdAt: new Date(),
-      lastSeen: null
+      lastSeen: null,
     };
     const result = devices.insert(device);
-    addLog('Device Added', `Added device ${device.name} at route ${device.route}`);
+    addLog(
+      "Device Added",
+      `Added device ${device.name} at route ${device.route}`
+    );
     return result;
   });
 }
@@ -109,10 +118,10 @@ export function updateDevice(id, deviceData) {
   return initializeDB().then(() => {
     const device = devices.findOne({ id });
     if (!device) return null;
-    
+
     Object.assign(device, deviceData);
     devices.update(device);
-    addLog('Device Updated', `Updated device ${device.name}`);
+    addLog("Device Updated", `Updated device ${device.name}`);
     return device;
   });
 }
@@ -121,11 +130,11 @@ export function updateDeviceStatus(id, status) {
   return initializeDB().then(() => {
     const device = devices.findOne({ id });
     if (!device) return null;
-    
+
     device.status = status;
     device.lastSeen = new Date();
     devices.update(device);
-    addLog('Device Status', `Device ${device.name} is now ${status}`);
+    addLog("Device Status", `Device ${device.name} is now ${status}`);
     return device;
   });
 }
@@ -134,9 +143,9 @@ export function removeDevice(id) {
   return initializeDB().then(() => {
     const device = devices.findOne({ id });
     if (!device) return false;
-    
+
     devices.remove(device);
-    addLog('Device Removed', `Removed device ${device.name}`);
+    addLog("Device Removed", `Removed device ${device.name}`);
     return true;
   });
 }
@@ -144,6 +153,53 @@ export function removeDevice(id) {
 export function getAllDevices() {
   return initializeDB().then(() => {
     return devices.find();
+  });
+}
+
+// Room functions
+export function addRoom(roomData) {
+  return initializeDB().then(() => {
+    const existingRoom = rooms.findOne({ name: roomData.name });
+    if (existingRoom) {
+      return existingRoom;
+    }
+    const room = {
+      ...roomData,
+      id: generateId(),
+      createdAt: new Date(),
+    };
+    const result = rooms.insert(room);
+    addLog("Room Added", `Added room ${room.name}`);
+    return result;
+  });
+}
+
+export function updateRoom(id, roomData) {
+  return initializeDB().then(() => {
+    const room = rooms.findOne({ id });
+    if (!room) return null;
+
+    Object.assign(room, roomData);
+    rooms.update(room);
+    addLog("Room Updated", `Updated room ${room.name}`);
+    return room;
+  });
+}
+
+export function removeRoom(id) {
+  return initializeDB().then(() => {
+    const room = rooms.findOne({ id });
+    if (!room) return false;
+
+    rooms.remove(room);
+    addLog("Room Removed", `Removed room ${room.name}`);
+    return true;
+  });
+}
+
+export function getAllRooms() {
+  return initializeDB().then(() => {
+    return rooms.find();
   });
 }
 
@@ -158,10 +214,10 @@ export function addRoute(routeData) {
       ...routeData,
       id: generateId(),
       createdAt: new Date(),
-      lastAccessed: null
+      lastAccessed: null,
     };
     const result = routes.insert(route);
-    addLog('Route Added', `Added route ${route.route}`);
+    addLog("Route Added", `Added route ${route.route}`);
     return result;
   });
 }
@@ -170,10 +226,10 @@ export function updateRoute(id, routeData) {
   return initializeDB().then(() => {
     const route = routes.findOne({ id });
     if (!route) return null;
-    
+
     Object.assign(route, routeData);
     routes.update(route);
-    addLog('Route Updated', `Updated route ${route.route}`);
+    addLog("Route Updated", `Updated route ${route.route}`);
     return route;
   });
 }
@@ -182,7 +238,7 @@ export function updateRouteAccess(route) {
   return initializeDB().then(() => {
     const routeObj = routes.findOne({ route });
     if (!routeObj) return null;
-    
+
     routeObj.lastAccessed = new Date();
     routes.update(routeObj);
     return routeObj;
@@ -193,9 +249,9 @@ export function removeRoute(id) {
   return initializeDB().then(() => {
     const route = routes.findOne({ id });
     if (!route) return false;
-    
+
     routes.remove(route);
-    addLog('Route Removed', `Removed route ${route.route}`);
+    addLog("Route Removed", `Removed route ${route.route}`);
     return true;
   });
 }
@@ -212,26 +268,26 @@ export function addLog(action, message) {
     const log = {
       action,
       message,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     logs.insert(log);
-    
+
     // Check logs size and prune if needed
     pruneOldLogs();
-    
+
     return log;
   });
 }
 
 export function getAllLogs() {
   return initializeDB().then(() => {
-    return logs.chain().find().simplesort('timestamp', true).data();
+    return logs.chain().find().simplesort("timestamp", true).data();
   });
 }
 
 export function exportLogs() {
   return initializeDB().then(() => {
-    const allLogs = logs.chain().find().simplesort('timestamp', true).data();
+    const allLogs = logs.chain().find().simplesort("timestamp", true).data();
     return JSON.stringify(allLogs, null, 2);
   });
 }
@@ -240,13 +296,18 @@ function pruneOldLogs() {
   // Simple approximation of the size
   if (logs.count() > 10000) {
     // Get oldest logs (anything beyond last 5000 entries)
-    const oldestLogs = logs.chain().find().simplesort('timestamp').limit(logs.count() - 5000).data();
-    
+    const oldestLogs = logs
+      .chain()
+      .find()
+      .simplesort("timestamp")
+      .limit(logs.count() - 5000)
+      .data();
+
     // Remove them
-    oldestLogs.forEach(log => {
+    oldestLogs.forEach((log) => {
       logs.remove(log);
     });
-    
+
     return true;
   }
   return false;
@@ -255,7 +316,7 @@ function pruneOldLogs() {
 // Settings functions
 export function saveSettings(settingsData) {
   return initializeDB().then(() => {
-    const existingSettings = settings.findOne({ id: 'app-settings' });
+    const existingSettings = settings.findOne({ id: "app-settings" });
     if (existingSettings) {
       Object.assign(existingSettings, settingsData);
       settings.update(existingSettings);
@@ -263,7 +324,7 @@ export function saveSettings(settingsData) {
     } else {
       const newSettings = {
         ...settingsData,
-        id: 'app-settings'
+        id: "app-settings",
       };
       return settings.insert(newSettings);
     }
@@ -272,7 +333,7 @@ export function saveSettings(settingsData) {
 
 export function getSettings() {
   return initializeDB().then(() => {
-    return settings.findOne({ id: 'app-settings' }) || {};
+    return settings.findOne({ id: "app-settings" }) || {};
   });
 }
 
@@ -281,7 +342,7 @@ export function exportSettings() {
     const allSettings = {
       settings: settings.find(),
       devices: devices.find(),
-      routes: routes.find()
+      routes: routes.find(),
     };
     return JSON.stringify(allSettings, null, 2);
   });
@@ -290,34 +351,34 @@ export function exportSettings() {
 export function importSettings(data) {
   return initializeDB().then(() => {
     try {
-      const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
-      
+      const parsedData = typeof data === "string" ? JSON.parse(data) : data;
+
       // Clear existing data
       if (parsedData.settings && Array.isArray(parsedData.settings)) {
         settings.clear();
-        parsedData.settings.forEach(setting => {
+        parsedData.settings.forEach((setting) => {
           settings.insert(setting);
         });
       }
-      
+
       if (parsedData.devices && Array.isArray(parsedData.devices)) {
         devices.clear();
-        parsedData.devices.forEach(device => {
+        parsedData.devices.forEach((device) => {
           devices.insert(device);
         });
       }
-      
+
       if (parsedData.routes && Array.isArray(parsedData.routes)) {
         routes.clear();
-        parsedData.routes.forEach(route => {
+        parsedData.routes.forEach((route) => {
           routes.insert(route);
         });
       }
-      
-      addLog('Settings Imported', 'Successfully imported settings');
+
+      addLog("Settings Imported", "Successfully imported settings");
       return true;
     } catch (error) {
-      addLog('Import Error', `Failed to import settings: ${error.message}`);
+      addLog("Import Error", `Failed to import settings: ${error.message}`);
       return false;
     }
   });
