@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import DeviceCard from "@/components/ui/device-card";
 import DeviceModal from "@/components/device-modal";
 import useDevices from "@/hooks/use-devices";
+import useRooms from "@/hooks/use-rooms"; // Import useRooms hook
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,6 +25,8 @@ const Devices = () => {
     deleteDevice,
     toggleDevice,
   } = useDevices();
+  const { rooms, isLoading: isLoadingRooms, error: errorRooms } = useRooms(); // Fetch rooms
+
   const [deviceModalOpen, setDeviceModalOpen] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [filteredDevices, setFilteredDevices] = useState([]);
@@ -225,6 +228,7 @@ const Devices = () => {
       {/* Device Modal */}
       <DeviceModal
         isOpen={deviceModalOpen}
+        rooms={rooms} // Pass rooms data to DeviceModal
         onClose={() => {
           setDeviceModalOpen(false);
           setSelectedDevice(null);

@@ -38,7 +38,9 @@ export function initializeDB() {
 
       devices = db.getCollection("devices");
       if (devices === null) {
-        devices = db.addCollection("devices", { indices: ["id", "route"] });
+        devices = db.addCollection("devices", {
+          indices: ["id", "route", "roomId"],
+        });
       }
 
       routes = db.getCollection("routes");
@@ -104,6 +106,7 @@ export function addDevice(deviceData) {
       status: "offline",
       createdAt: new Date(),
       lastSeen: null,
+      roomId: deviceData.roomId || null,
     };
     const result = devices.insert(device);
     addLog(
@@ -120,6 +123,9 @@ export function updateDevice(id, deviceData) {
     if (!device) return null;
 
     Object.assign(device, deviceData);
+    // Ensure roomId is handled correctly, default to null if not provided
+    device.roomId =
+      deviceData.roomId === undefined ? device.roomId : deviceData.roomId;
     devices.update(device);
     addLog("Device Updated", `Updated device ${device.name}`);
     return device;

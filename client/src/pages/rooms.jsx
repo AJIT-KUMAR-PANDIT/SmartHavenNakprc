@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query"; // Keep useQuery for devices
+import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import useRooms from "@/hooks/use-rooms"; // Import the new hook
+import useRooms from "@/hooks/use-rooms";
+import useDevices from "@/hooks/use-devices";
+import RoomModal from "@/components/room-modal";
+import DeviceCard from "@/components/ui/device-card";
 
-const RoomCard = ({ room, onEdit, onDelete }) => {
+const RoomCard = ({ room, onEdit, onDelete, roomDevices }) => {
   const { data: devices } = useQuery({
     queryKey: ["/api/devices"],
     refetchOnWindowFocus: false,
   });
-
-  // Filter devices that belong to this room
-  const roomDevices = devices
-    ? devices.filter((device) => device.roomId === room.id)
-    : [];
 
   return (
     <div className="bg-[#1e1e2e] rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg border border-gray-800">
@@ -101,146 +99,6 @@ const RoomCard = ({ room, onEdit, onDelete }) => {
   );
 };
 
-// Room form for adding/editing rooms
-const RoomForm = ({ isEdit, roomData, onSubmit, onCancel }) => {
-  const [name, setName] = useState(roomData?.name || "");
-  const [type, setType] = useState(roomData?.type || "living");
-  const [image, setImage] = useState(roomData?.image || "");
-  const [floor, setFloor] = useState(roomData?.floor || 1);
-
-  const roomTypes = [
-    { id: "living", label: "Living Room", icon: "ri-sofa-line" },
-    { id: "bedroom", label: "Bedroom", icon: "ri-hotel-bed-line" },
-    { id: "kitchen", label: "Kitchen", icon: "ri-fridge-line" },
-    { id: "bathroom", label: "Bathroom", icon: "ri-shower-room-line" },
-    { id: "office", label: "Office", icon: "ri-computer-line" },
-    { id: "hallway", label: "Hallway", icon: "ri-door-line" },
-    { id: "garage", label: "Garage", icon: "ri-car-line" },
-    { id: "outdoor", label: "Outdoor", icon: "ri-plant-line" },
-    { id: "other", label: "Other", icon: "ri-home-line" },
-  ];
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit({
-      id: roomData?.id,
-      name,
-      type,
-      image,
-      floor: parseInt(floor),
-      createdAt: roomData?.createdAt || new Date().toISOString(),
-    });
-  };
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-[#1e1e2e] rounded-xl p-6 border border-gray-800"
-    >
-      <h2 className="text-xl font-semibold mb-6">
-        {isEdit ? "Edit Room" : "Add New Room"}
-      </h2>
-
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-sm font-medium mb-2">
-          Room Name
-        </label>
-        <input
-          id="name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 bg-[#121218] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
-          required
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Room Type</label>
-        <div className="grid grid-cols-3 gap-2">
-          {roomTypes.map((roomType) => (
-            <div
-              key={roomType.id}
-              className={`flex flex-col items-center p-3 border rounded-md cursor-pointer transition-colors ${
-                type === roomType.id
-                  ? "bg-[#2563eb]/10 border-[#2563eb]"
-                  : "border-gray-700 hover:bg-gray-800"
-              }`}
-              onClick={() => setType(roomType.id)}
-            >
-              <i
-                className={`${roomType.icon} text-xl mb-2 ${
-                  type === roomType.id ? "text-[#2563eb]" : "text-gray-400"
-                }`}
-              ></i>
-              <span
-                className={`text-xs ${
-                  type === roomType.id ? "text-white" : "text-gray-400"
-                }`}
-              >
-                {roomType.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <label htmlFor="image" className="block text-sm font-medium mb-2">
-          Image URL (Optional)
-        </label>
-        <input
-          id="image"
-          type="text"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
-          placeholder="https://example.com/room-image.jpg"
-          className="w-full px-3 py-2 bg-[#121218] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Enter a URL for a room image or leave blank to use default icon
-        </p>
-      </div>
-
-      <div className="mb-6">
-        <label htmlFor="floor" className="block text-sm font-medium mb-2">
-          Floor
-        </label>
-        <select
-          id="floor"
-          value={floor}
-          onChange={(e) => setFloor(e.target.value)}
-          className="w-full px-3 py-2 bg-[#121218] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
-        >
-          <option value={-1}>Basement</option>
-          <option value={0}>Ground Floor</option>
-          <option value={1}>First Floor</option>
-          <option value={2}>Second Floor</option>
-          <option value={3}>Third Floor</option>
-          <option value={4}>Fourth Floor</option>
-        </select>
-      </div>
-
-      <div className="flex justify-end space-x-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 border border-gray-600 rounded-md hover:bg-gray-800"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-[#2563eb] hover:bg-[#1e40af] rounded-md"
-          disabled={!name}
-        >
-          {isEdit ? "Update Room" : "Add Room"}
-        </button>
-      </div>
-    </form>
-  );
-};
-
 // Get room icon based on type
 function getRoomIcon(type) {
   const icons = {
@@ -286,8 +144,34 @@ export default function Rooms() {
   const { toast } = useToast();
 
   // Use the new useRooms hook
-  const { rooms, isLoading, error, createRoom, editRoom, deleteRoom } =
-    useRooms();
+  const {
+    rooms,
+    isLoading: isLoadingRooms,
+    error: errorRooms,
+    createRoom,
+    editRoom,
+    deleteRoom,
+  } = useRooms();
+
+  // Use the useDevices hook to fetch all devices
+  const {
+    devices,
+    isLoading: isLoadingDevices,
+    error: errorDevices,
+  } = useDevices();
+
+  // Group devices by room
+  const devicesByRoom = useMemo(() => {
+    if (!devices) return {};
+    return devices.reduce((acc, device) => {
+      const roomId = device.roomId || "unassigned"; // Group devices without a room under 'unassigned'
+      if (!acc[roomId]) {
+        acc[roomId] = [];
+      }
+      acc[roomId].push(device);
+      return acc;
+    }, {});
+  }, [devices]);
 
   const handleRoomSubmit = async (roomData) => {
     try {
@@ -342,10 +226,8 @@ export default function Rooms() {
     }
   };
 
-  const handleCancelForm = () => {
-    setShowForm(false);
-    setEditingRoom(null);
-  };
+  const isLoading = isLoadingRooms || isLoadingDevices;
+  const error = errorRooms || errorDevices;
 
   return (
     <motion.div
@@ -364,49 +246,73 @@ export default function Rooms() {
           Add Room
         </button>
       </div>
-
-      {showForm ? (
-        <RoomForm
-          isEdit={!!editingRoom}
-          roomData={editingRoom}
-          onSubmit={handleRoomSubmit}
-          onCancel={handleCancelForm}
-        />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isLoading ? (
-            <div className="col-span-full flex justify-center py-10">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#2563eb]"></div>
+      <RoomModal
+        isOpen={showForm}
+        onClose={() => setShowForm(false)}
+        isEdit={!!editingRoom}
+        roomData={editingRoom}
+        onSubmit={handleRoomSubmit}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {isLoading ? (
+          <div className="col-span-full flex justify-center py-10">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#2563eb]"></div>
+          </div>
+        ) : error ? (
+          <div className="col-span-full text-center py-12 bg-gradient-to-r from-red-900/20 to-red-800/20 rounded-lg border border-red-800/50 backdrop-blur-sm">
+            <i className="ri-error-warning-line text-6xl text-red-500 animate-pulse"></i>
+            <p className="mt-4 text-red-300 text-lg">{error}</p>
+            {/* Add a retry button if needed */}
+          </div>
+        ) : rooms && rooms.length > 0 ? (
+          // Render rooms with their associated devices
+          rooms.map((room) => (
+            <RoomCard
+              key={room.id}
+              room={room}
+              onEdit={handleEditRoom}
+              onDelete={handleDeleteRoom}
+              roomDevices={devicesByRoom[room.id] || []}
+            />
+          ))
+        ) : (
+          <div className="col-span-full bg-[#1e1e2e] rounded-xl p-8 text-center border border-gray-800">
+            <div className="text-6xl text-gray-600 mb-4">
+              <i className="ri-home-line"></i>
             </div>
-          ) : rooms && rooms.length > 0 ? (
-            rooms.map((room) => (
-              <RoomCard
-                key={room.id}
-                room={room}
-                onEdit={handleEditRoom}
-                onDelete={handleDeleteRoom}
-              />
-            ))
-          ) : (
-            <div className="col-span-full bg-[#1e1e2e] rounded-xl p-8 text-center border border-gray-800">
-              <div className="text-6xl text-gray-600 mb-4">
-                <i className="ri-home-line"></i>
+            <h3 className="text-xl font-medium mb-2">No Rooms Added Yet</h3>
+            <p className="text-gray-400 mb-6">
+              Organize your smart home by adding rooms to group your devices.
+            </p>
+            <button
+              onClick={() => setShowForm(true)}
+              className="px-4 py-2 bg-[#2563eb] hover:bg-[#1e40af] rounded-md inline-flex items-center"
+            >
+              <i className="ri-add-line mr-2"></i>
+              Add Your First Room
+            </button>
+          </div>
+        )}
+        {/* Render unassigned devices if any */}
+        {devicesByRoom["unassigned"] &&
+          devicesByRoom["unassigned"].length > 0 && (
+            <div className="col-span-full">
+              <h2 className="text-xl font-bold mb-4">Unassigned Devices</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {devicesByRoom["unassigned"].map((device) => (
+                  <DeviceCard
+                    key={device.id}
+                    device={device}
+                    // Pass necessary props for device actions if needed
+                    // onToggle={toggleDevice}
+                    // onEdit={handleEditDevice}
+                    // onDelete={handleDeleteDevice}
+                  />
+                ))}
               </div>
-              <h3 className="text-xl font-medium mb-2">No Rooms Added Yet</h3>
-              <p className="text-gray-400 mb-6">
-                Organize your smart home by adding rooms to group your devices.
-              </p>
-              <button
-                onClick={() => setShowForm(true)}
-                className="px-4 py-2 bg-[#2563eb] hover:bg-[#1e40af] rounded-md inline-flex items-center"
-              >
-                <i className="ri-add-line mr-2"></i>
-                Add Your First Room
-              </button>
             </div>
           )}
-        </div>
-      )}
+      </div>
     </motion.div>
   );
 }

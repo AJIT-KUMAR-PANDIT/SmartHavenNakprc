@@ -10,12 +10,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const DeviceModal = ({ isOpen, onClose, onSave, device = null }) => {
+const DeviceModal = ({
+  isOpen,
+  onClose,
+  onSave,
+  device = null,
+  rooms = [],
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     route: "",
     type: "switch",
     pin: "",
+    roomId: null,
   });
 
   const [errors, setErrors] = useState({});
@@ -28,6 +35,7 @@ const DeviceModal = ({ isOpen, onClose, onSave, device = null }) => {
         route: device.route || "",
         type: device.type || "switch",
         pin: device.pin || "",
+        roomId: device.roomId || null,
       });
     } else {
       // Reset form for adding a new device
@@ -36,6 +44,7 @@ const DeviceModal = ({ isOpen, onClose, onSave, device = null }) => {
         route: "",
         type: "switch",
         pin: "",
+        roomId: null,
       });
     }
     setErrors({});
@@ -70,6 +79,8 @@ const DeviceModal = ({ isOpen, onClose, onSave, device = null }) => {
       newErrors.route = "Route must start with /";
     }
 
+    // Room is optional, no validation needed for roomId
+
     if (!formData.type) {
       newErrors.type = "Device type is required";
     }
@@ -94,6 +105,8 @@ const DeviceModal = ({ isOpen, onClose, onSave, device = null }) => {
       const deviceData = {
         ...formData,
         pin: Number(formData.pin),
+        // Ensure roomId is included, even if null
+        roomId: formData.roomId,
       };
 
       onSave(deviceData, device?.id);
@@ -238,6 +251,40 @@ const DeviceModal = ({ isOpen, onClose, onSave, device = null }) => {
                             {errors.pin}
                           </p>
                         )}
+                      </div>
+
+                      {/* Room Selection Dropdown */}
+                      <div>
+                        <label
+                          htmlFor="device-room"
+                          className="block text-sm font-medium text-gray-400 mb-1"
+                        >
+                          Room (Optional)
+                        </label>
+                        <Select
+                          value={formData.roomId || ""}
+                          onValueChange={(value) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              roomId: value === "no-room" ? null : value,
+                            }))
+                          }
+                        >
+                          <SelectTrigger className="w-full bg-[#121218] border-gray-700 transition-all duration-200 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <SelectValue placeholder="Select a room" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-[#1e1e2e] border-gray-700">
+                            <SelectItem value="no-room">No Room</SelectItem>
+                            {/* Rooms will be mapped here */}
+                            {rooms
+                              .filter((room) => room && room.id) // Filter out rooms with no id
+                              .map((room) => (
+                                <SelectItem key={room.id} value={room.id}>
+                                  {room.name}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   </div>
