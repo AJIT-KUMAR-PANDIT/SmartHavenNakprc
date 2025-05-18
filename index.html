@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NodeMCU Dynamic Routes Server Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1, h2, h3, h4 {
+            color: #444;
+        }
+        pre {
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NodeMCU Dynamic Routes Server Documentation</h1>
+
+        <div class="section">
+            <h2>Overview</h2>
+            <p>This is a sophisticated IoT application that creates a configurable web server on an ESP8266 microcontroller with the following features:</p>
+            <ul>
+                <li>Dual HTTP/HTTPS servers - Runs on ports 80 and 443</li>
+                <li>mDNS support - Makes the device accessible via a friendly name (nakprc.local)</li>
+                <li>Dynamic route configuration - Routes can be added/modified/deleted at runtime</li>
+                <li>IoT device control - Can register and control physical devices connected to GPIO pins</li>
+                <li>Persistent storage - Uses SPIFFS filesystem to store configurations</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Technical Documentation</h2>
+
+            <div class="section">
+                <h3>Code Structure Analysis</h3>
+                <p>The code has several functional components:</p>
+                <ul>
+                    <li><strong>Setup and Configuration:</strong> WiFi credentials setup, web server initialization (both HTTP and HTTPS), self-signed certificate configuration for HTTPS, mDNS configuration for local network discovery.</li>
+                    <li><strong>Route Management:</strong> Functions to store, update, and delete routes. Route configuration persists in a JSON file stored on SPIFFS. Routes can represent either standard web endpoints or physical devices.</li>
+                    <li><strong>Device Control System:</strong> Register IoT devices with specific GPIO pins. Each device gets automatically generated control routes (on/off endpoints). Device state is maintained and persisted.</li>
+                    <li><strong>Request Queue System:</strong> Async request handling using a queue to prevent blocking operations. Ensures the device remains responsive even during complex operations.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h3>Key Functions</h3>
+                <ul>
+                    <li>
+                        <strong>controlDevice:</strong>
+                        <p>Controls a device based on the route and command.</p>
+                        <pre>
+void controlDevice(String route, String command) {
+    // Parses the route to extract device information
+    // Controls the device based on the command (on/off)
+}
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>processQueue:</strong>
+                        <p>Processes the request queue asynchronously to ensure the device remains responsive.</p>
+                        <pre>
+void processQueue() {
+    // Processes each request in the queue
+    // Ensures non-blocking operation
+}
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>loadStoredRoutes:</strong>
+                        <p>Loads routes from the SPIFFS filesystem.</p>
+                        <pre>
+void loadStoredRoutes() {
+    // Loads routes from the JSON file stored in SPIFFS
+    // Registers the routes with the server
+}
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>saveRoute:</strong>
+                        <p>Saves or updates routes to the SPIFFS filesystem.</p>
+                        <pre>
+void saveRoute(String route, String action, JsonObject deviceConfig = JsonObject()) {
+    // Saves the route and action to the JSON file
+    // Registers the route with the server
+}
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>updateWiFiCredentials:</strong>
+                        <p>Updates WiFi credentials and reconnects to the network.</p>
+                        <pre>
+void updateWiFiCredentials(String newSsid, String newPassword) {
+    // Updates the WiFi credentials
+    // Reconnects to the WiFi network
+}
+                        </pre>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>How to Use</h2>
+
+            <div class="section">
+                <h3>Setting Up</h3>
+                <p>To set up the NodeMCU Dynamic Routes Server:</p>
+                <ol>
+                    <li>Upload the provided code to your ESP8266 microcontroller.</li>
+                    <li>Ensure the SPIFFS filesystem is mounted and contains the necessary files.</li>
+                    <li>Connect to the WiFi network using the provided credentials.</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h3>Using the Server</h3>
+                <p>Once the server is running, you can interact with it using the following endpoints:</p>
+                <ul>
+                    <li>
+                        <strong>/:</strong>
+                        <p>Welcome route that lists available routes.</p>
+                    </li>
+                    <li>
+                        <strong>/api:</strong>
+                        <p>POST endpoint to store new routes or register devices. Example JSON body for storing a route:</p>
+                        <pre>
+{
+    "route": "YOUR_ROUTE",
+    "action": "YOUR_ACTION"
+}
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>/auth:</strong>
+                        <p>POST endpoint to update WiFi credentials. Example JSON body:</p>
+                        <pre>
+{
+    "ssid": "YOUR_SSID",
+    "password": "YOUR_PASSWORD"
+}
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>/sethttp:</strong>
+                        <p>GET endpoint to enable or disable HTTP mode. Example:</p>
+                        <pre>
+/sethttp?mode=on
+/sethttp?mode=off
+                        </pre>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h3>Examples</h3>
+                <p>Here are some example requests:</p>
+                <ul>
+                    <li>
+                        <p>To store a new route:</p>
+                        <pre>
+POST /api with JSON body:
+{
+    "route": "YOUR_ROUTE",
+    "action": "YOUR_ACTION"
+}
+                        </pre>
+                    </li>
+                    <li>
+                        <p>To register a device:</p>
+                        <pre>
+POST /api with JSON body:
+{
+    "route": "YOUR_ROUTE",
+    "name": "DEVICE_NAME",
+    "pin": GPIO_PIN,
+    "type": "DEVICE_TYPE"
+}
+                        </pre>
+                    </li>
+                    <li>
+                        <p>To update WiFi credentials:</p>
+                        <pre>
+POST /auth with JSON body:
+{
+    "ssid": "YOUR_SSID",
+    "password": "YOUR_PASSWORD"
+}
+                        </pre>
+                    </li>
+                    <li>
+                        <p>To enable HTTP mode:</p>
+                        <pre>
+GET /sethttp?mode=on
+                        </pre>
+                    </li>
+                    <li>
+                        <p>To disable HTTP mode:</p>
+                        <pre>
+GET /sethttp?mode=off
+                        </pre>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Conclusion</h2>
+            <p>This documentation provides an overview of the NodeMCU Dynamic Routes Server, its technical details, and how to use it. For further customization or advanced usage, refer to the code comments and adjust the configurations as needed.</p>
+        </div>
+    </div>
+
+    <script>
+        // You can add inline JavaScript here if needed for dynamic interactions
+        console.log("Documentation loaded");
+    </script>
+</body>
+</html>
