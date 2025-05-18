@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alert Dialog Component Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Alert Dialog Component (alert-dialog.tsx) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          The AlertDialog component is used to display a modal dialog that requires user interaction, typically for confirmations or important messages.
+          It blocks interaction with the rest of the application until the user dismisses it.
+        </p>
+        <h3>Props</h3>
+        <ul>
+          <li><code>isOpen</code> (boolean): Controls whether the dialog is currently open or closed.</li>
+          <li><code>onClose</code> (function): A callback function executed when the dialog is requested to be closed (e.g., by clicking outside or pressing Escape).</li>
+          <li><code>title</code> (string): The title displayed at the top of the dialog.</li>
+          <li><code>description</code> (string): The main content or message displayed within the dialog.</li>
+          <li><code>confirmText</code> (string, optional): The text for the confirmation button (defaults to 'Confirm').</li>
+          <li><code>cancelText</code> (string, optional): The text for the cancel button (defaults to 'Cancel').</li>
+          <li><code>onConfirm</code> (function, optional): A callback function executed when the confirm button is clicked.</li>
+          <li><code>onCancel</code> (function, optional): A callback function executed when the cancel button is clicked.</li>
+        </ul>
+        <h3>Basic Usage</h3>
+        <pre><code class="language-jsx">
+import React, { useState } from 'react';
+import AlertDialog from './AlertDialog';
+
+const MyComponent = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleConfirm = () => {
+    console.log('Confirmed!');
+    setIsDialogOpen(false);
+  };
+
+  const handleCancel = () => {
+    console.log('Cancelled!');
+    setIsDialogOpen(false);
+  };
+
+  return (
+    <>
+      <button onClick={() => setIsDialogOpen(true)}>Open Dialog</button>
+      <AlertDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title="Confirm Action"
+        description="Are you sure you want to proceed with this action?"
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
+    </>
+  );
+};
+
+export default MyComponent;
+        </code></pre>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

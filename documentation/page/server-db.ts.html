@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Server Database Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Server Database (db.ts) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          This file (`db.ts`) is responsible for establishing and managing the
+          connection to the Neon database using the Drizzle ORM. It imports
+          necessary modules like `Pool` and `neonConfig` from
+          `@neondatabase/serverless`, `drizzle` from
+          `drizzle-orm/neon-serverless`, and the shared schema. It configures
+          the WebSocket constructor for Neon, validates the presence of the
+          `DATABASE_URL` environment variable, creates a database connection
+          pool, and initializes the Drizzle ORM instance with the defined
+          schema. This setup provides the database client (`db`) used throughout
+          the server-side code for interacting with the database.
+        </p>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

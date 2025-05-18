@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accordion Component Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Accordion Component (accordion.tsx) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          The Accordion component (<code>components/ui/accordion.tsx</code>) is
+          built on top of the <code>@radix-ui/react-accordion</code> primitive.
+          It provides a set of components for creating collapsible content
+          sections.
+        </p>
+        <h3>Usage</h3>
+        <p>
+          This component includes the main <code>Accordion</code> root component
+          and sub-components like <code>AccordionItem</code>,
+          <code>AccordionTrigger</code>, and <code>AccordionContent</code>. It
+          uses the <code>cn</code> utility for class merging and
+          <code>lucide-react</code> for the collapse/expand icon.
+        </p>
+        <h3>Dependencies</h3>
+        <ul>
+          <li>
+            <code>@radix-ui/react-accordion</code>: Provides the core accessible
+            accordion functionality.
+          </li>
+          <li><code>lucide-react</code>: Used for the ChevronDown icon.</li>
+          <li>
+            <code>cn</code> utility function: Used for conditionally joining and
+            merging CSS classes.
+          </li>
+        </ul>
+        <h3>Components</h3>
+        <ul>
+          <li><code>Accordion</code>: The root component for the accordion.</li>
+          <li>
+            <code>AccordionItem</code>: Wraps each individual collapsible
+            section.
+          </li>
+          <li>
+            <code>AccordionTrigger</code>: The interactive element that toggles
+            the content visibility.
+          </li>
+          <li><code>AccordionContent</code>: The collapsible content area.</li>
+        </ul>
+
+        <h3>Styling</h3>
+        <p>
+          Styling is applied using Tailwind CSS classes via the
+          <code>cn</code> utility function. Animations for collapsing and
+          expanding are handled using CSS transitions and Radix UI's data
+          attributes (`data-state`).
+        </p>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

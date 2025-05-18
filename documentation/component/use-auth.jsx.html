@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>useAuth Hook Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>useAuth Hook and AuthProvider (hooks/use-auth.jsx) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          The <code>useAuth</code> hook and its associated <code>AuthProvider</code> component provide a context-based solution for managing user authentication state throughout the client application. They handle user login, signup, logout, and persistence of the authenticated state using local storage.
+        </p>
+        <h3><code>AuthProvider</code> Component</h3>
+        <p>
+          This component wraps the part of the application that needs access to authentication state and functions. It initializes the authentication state by checking local storage for a stored user session and provides the authentication context to its children.
+        </p>
+        <h4>State</h4>
+        <ul>
+          <li><code>currentUser</code> (object | null): Stores the currently authenticated user object, or <code>null</code> if not authenticated.</li>
+          <li><code>isAuthenticated</code> (boolean): Indicates whether a user is currently authenticated.</li>
+          <li><code>isLoading</code> (boolean): Indicates if an authentication operation (login, signup, initial check) is in progress.</li>
+          <li><code>authError</code> (string | null): Stores any error message related to authentication operations.</li>
+        </ul>
+        <h4>Usage</h4>
+        <pre><code class="language-jsx">
+import React from 'react';
+import { AuthProvider } from '@/hooks/use-auth';
+import App from './App'; // Your main application component
+
+function Main() {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  );
+}
+
+export default Main;
+        </code></pre>
+        <h3><code>useAuth</code> Hook</h3>
+        <p>
+          This hook provides access to the authentication state and functions provided by the <code>AuthProvider</code>. It should be used within a component that is a descendant of <code>AuthProvider</code>.
+        </p>
+        <h4>Returned Values</h4>
+        <ul>
+          <li><code>currentUser</code> (object | null): The currently authenticated user.</li>
+          <li><code>isAuthenticated</code> (boolean): Authentication status.</li>
+          <li><code>isLoading</code> (boolean): Loading status of authentication operations.</li>
+          <li><code>authError</code> (string | null): Authentication error message.</li>
+          <li><code>login</code> (function): Asynchronous function to handle user login (<code>async (username, pin) => boolean</code>).</li>
+          <li><code>signup</code> (function): Asynchronous function to handle user signup (<code>async (username, pin) => boolean</code>).</li>
+          <li><code>logout</code> (function): Function to handle user logout.</li>
+        </ul>
+        <h4>Usage</h4>
+        <pre><code class="language-jsx">
+import React from 'react';
+import { useAuth } from '@/hooks/use-auth';
+
+function MyComponent() {
+  const { isAuthenticated, currentUser, login, logout, isLoading, authError } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading authentication...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div>
+        <p>Please log in.</p>
+        {/* Render login form or AuthScreen component */}
+        {authError && <p style={{ color: 'red' }}>{authError}</p>}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p>Welcome, {currentUser.username}!</p>
+      <button onClick={logout}>Logout</button>
+    </div>
+  );
+}
+
+export default MyComponent;
+        </code></pre>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

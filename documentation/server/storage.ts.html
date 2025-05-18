@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Server Storage Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Server Storage (server/storage.ts) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          The <code>server/storage.ts</code> file defines the data storage
+          interface (<code>IStorage</code>) and provides an in-memory
+          implementation (<code>MemStorage</code>) for the SmartHaven backend.
+          This module is responsible for managing users, devices, routes, logs,
+          and settings.
+        </p>
+        <p>
+          The <code>IStorage</code> interface outlines the required methods for
+          any storage implementation, ensuring a consistent API for data access
+          and manipulation. The <code>MemStorage</code> class provides a simple,
+          non-persistent implementation using JavaScript Maps and arrays.
+        </p>
+        <h3><code>IStorage</code> Interface</h3>
+        <p>Defines the contract for data storage operations:</p>
+        <ul>
+          <li>
+            <strong>User Management:</strong> <code>getUser</code>,
+            <code>getUserByUsername</code>, <code>createUser</code>
+          </li>
+          <li>
+            <strong>Device Management:</strong> <code>getDeviceById</code>,
+            <code>getAllDevices</code>, <code>addDevice</code>,
+            <code>updateDevice</code>, <code>updateDeviceStatus</code>,
+            <code>removeDevice</code>
+          </li>
+          <li>
+            <strong>Route Management:</strong> <code>getRouteById</code>,
+            <code>getAllRoutes</code>, <code>addRoute</code>,
+            <code>updateRoute</code>, <code>updateRouteAccess</code>,
+            <code>removeRoute</code>
+          </li>
+          <li>
+            <strong>Logs:</strong> <code>addLog</code>, <code>getAllLogs</code>,
+            <code>pruneOldLogs</code>
+          </li>
+          <li>
+            <strong>Settings:</strong> <code>saveSettings</code>,
+            <code>getSettings</code>, <code>exportSettings</code>,
+            <code>importSettings</code>
+          </li>
+        </ul>
+        <h3><code>MemStorage</code> Class</h3>
+        <p>
+          An in-memory implementation of the <code>IStorage</code> interface.
+          Data is stored in memory and is not persistent across server restarts.
+          It includes methods for:
+        </p>
+        <ul>
+          <li>Initializing with default system routes.</li>
+          <li>Generating unique IDs for entities.</li>
+          <li>
+            Implementing all methods defined in the
+            <code>IStorage</code> interface using Maps and arrays.
+          </li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

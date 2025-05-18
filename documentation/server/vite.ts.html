@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Server Vite Integration Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Server Vite Integration (server/vite.ts) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          The <code>server/vite.ts</code> file is responsible for integrating
+          Vite with the Express server for handling client-side assets during
+          development and serving static files in production. It sets up Vite's
+          development server middleware and handles serving the client's
+          <code>index.html</code>.
+        </p>
+        <h3><code>setupVite</code> Function</h3>
+        <p>
+          This asynchronous function initializes and integrates the Vite
+          development server middleware into the Express application. It is used
+          during development to enable features like Hot Module Replacement
+          (HMR).
+        </p>
+        <ul>
+          <li>Creates a Vite server with middleware mode enabled.</li>
+          <li>Configures HMR to use the existing HTTP server.</li>
+          <li>
+            Adds Vite's middleware to the Express app to serve client assets and
+            handle HMR.
+          </li>
+          <li>
+            Sets up a fallback route (<code>*</code>) to serve the client's
+            <code>index.html</code>, transforming it with Vite's
+            <code>transformIndexHtml</code> to inject necessary development
+            scripts.
+          </li>
+        </ul>
+        <h3><code>serveStatic</code> Function</h3>
+        <p>
+          This function is used to serve the built client-side application files
+          in a production-like environment.
+        </p>
+        <ul>
+          <li>
+            Determines the path to the built client assets (assuming they are in
+            a <code>public</code> directory).
+          </li>
+          <li>
+            Throws an error if the build directory is not found, emphasizing the
+            need to build the client first.
+          </li>
+          <li>
+            Uses Express's static middleware to serve files from the build
+            directory.
+          </li>
+          <li>
+            Includes a fallback to serve <code>index.html</code> for any
+            requests that don't match a static file, which is typical for
+            single-page applications.
+          </li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Server Routes Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Server Routes (server/routes.ts) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          The <code>server/routes.ts</code> file is responsible for setting up
+          the HTTP server and defining the API routes and WebSocket
+          communication for the SmartHaven backend. It uses Express for handling
+          HTTP requests and <code>ws</code> for WebSocket connections.
+        </p>
+        <p>
+          The <code>registerRoutes</code> function initializes the HTTP server,
+          sets up the WebSocket server on the <code>/api/ws</code> path, and
+          defines various API endpoints for user authentication, device
+          management, room management, route management, scene management, and
+          logging.
+        </p>
+        <h3>WebSocket Communication (/api/ws)</h3>
+        <p>
+          The WebSocket server provides real-time communication capabilities.
+          Clients can connect to <code>/api/ws</code> to receive updates and
+          send control commands.
+        </p>
+        <ul>
+          <li>
+            <strong>Connection:</strong> Upon successful connection, a
+            <code>connected</code> message is sent to the client.
+          </li>
+          <li>
+            <strong>Message Handling:</strong> The server listens for incoming
+            messages and handles different types, such as
+            <code>device_control</code>.
+          </li>
+          <li>
+            <strong>Broadcasting:</strong> Updates (e.g., device status changes)
+            are broadcast to all connected WebSocket clients.
+          </li>
+        </ul>
+        <h3>API Routes</h3>
+        <p>The following HTTP API routes are defined:</p>
+        <h4>Authentication</h4>
+        <ul>
+          <li>
+            <code>POST /api/auth/login</code>: Handles user login. Requires
+            <code>username</code> and <code>pin</code> in the request body.
+          </li>
+          <li>
+            <code>POST /api/auth/register</code>: Handles new user registration.
+            Requires <code>username</code> and <code>pin</code> in the request
+            body.
+          </li>
+        </ul>
+        <h4>Device Management</h4>
+        <ul>
+          <li>
+            <code>GET /api/devices</code>: Retrieves all registered devices.
+          </li>
+          <li>
+            <code>POST /api/devices</code>: Adds a new device. Requires device
+            details (<code>name</code>, <code>route</code>, <code>type</code>,
+            <code>pin</code>) in the request body.
+          </li>
+          <li>
+            <code>PUT /api/devices/:id</code>: Updates an existing device by ID.
+            Requires updated device data in the request body.
+          </li>
+          <li><code>DELETE /api/devices/:id</code>: Deletes a device by ID.</li>
+        </ul>
+        <h4>Room Management</h4>
+        <ul>
+          <li><code>GET /api/rooms</code>: Retrieves all registered rooms.</li>
+          <li>
+            <code>POST /api/rooms</code>: Adds a new room. Requires room details
+            (<code>name</code>) in the request body.
+          </li>
+          <li>
+            <code>PUT /api/rooms/:id</code>: Updates an existing room by ID.
+            Requires updated room data in the request body.
+          </li>
+          <li><code>DELETE /api/rooms/:id</code>: Deletes a room by ID.</li>
+        </ul>
+        <h4>Route Management</h4>
+        <ul>
+          <li>
+            <code>GET /api/routes</code>: Retrieves all registered routes.
+          </li>
+          <li>
+            <code>POST /api/routes</code>: Adds a new route. Requires route
+            details (<code>name</code>, <code>path</code>) in the request body.
+          </li>
+          <li>
+            <code>PUT /api/routes/:id</code>: Updates an existing route by ID.
+            Requires updated route data in the request body.
+          </li>
+          <li><code>DELETE /api/routes/:id</code>: Deletes a route by ID.</li>
+        </ul>
+        <h4>Scene Management</h4>
+        <ul>
+          <li>
+            <code>GET /api/scenes</code>: Retrieves all registered scenes.
+          </li>
+          <li>
+            <code>POST /api/scenes</code>: Adds a new scene. Requires scene
+            details (<code>name</code>, <code>actions</code>) in the request
+            body.
+          </li>
+          <li>
+            <code>PUT /api/scenes/:id</code>: Updates an existing scene by ID.
+            Requires updated scene data in the request body.
+          </li>
+          <li><code>DELETE /api/scenes/:id</code>: Deletes a scene by ID.</li>
+        </ul>
+        <h4>Logging</h4>
+        <ul>
+          <li><code>GET /api/logs</code>: Retrieves all logs.</li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

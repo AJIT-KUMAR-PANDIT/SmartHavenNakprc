@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rooms Page Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Rooms Page (rooms.jsx) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          This file (`rooms.jsx`) implements the Rooms page of the client
+          application. It allows users to manage rooms and the devices
+          associated with them.
+        </p>
+        <p>
+          The component uses the `useRooms` hook to fetch and manage room data
+          and the `useDevices` hook to fetch device data. It also utilizes the
+          `useQuery` hook from `@tanstack/react-query` to fetch devices
+          specifically for displaying within room cards.
+        </p>
+        <p>
+          It includes state for managing room and device modals, selected
+          room/device, and the visibility of device lists within room cards.
+        </p>
+        <p>Key functionalities include:</p>
+        <ul>
+          <li>Displaying a list of rooms.</li>
+          <li>Showing devices associated with each room.</li>
+          <li>Providing options to edit and delete rooms.</li>
+          <li>Allowing toggling of all devices within a room.</li>
+          <li>
+            Displaying device cards within rooms with options to toggle, edit,
+            and delete individual devices.
+          </li>
+          <li>Opening modals for adding/editing rooms and devices.</li>
+          <li>
+            Helper functions (`getRoomIcon`, `getDeviceIcon`,
+            `capitalizeFirstLetter`) for UI presentation.
+          </li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

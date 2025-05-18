@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Page Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Dashboard Page (dashboard.jsx) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          This file (`dashboard.jsx`) implements the main dashboard page of the
+          client application. It provides an overview of the smart home system,
+          displaying key statistics like connected devices, active routes, and
+          MQTT connection status. It also features a section for quick device
+          control and a view of dynamic routes.
+        </p>
+        <p>
+          The component utilizes several hooks, including `useDevices` and
+          `useRoutes`, to fetch and manage data. It also uses `useState` and
+          `useEffect` for local state management and periodic updates (e.g.,
+          MQTT status). The UI is built using various custom components like
+          `StatusCard`, `ConnectionStatusCard`, and `DeviceCard`, along with
+          components from a UI library (likely Shadcn UI based on the imports).
+        </p>
+        <p>Key functionalities include:</p>
+        <ul>
+          <li>Displaying counts of online devices and active routes.</li>
+          <li>Showing the current MQTT connection status.</li>
+          <li>
+            Providing a list of devices with controls to toggle, edit, and
+            delete them.
+          </li>
+          <li>Displaying a table of dynamic routes.</li>
+          <li>Opening modals for adding/editing devices.</li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Documentation</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Project Documentation</h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#client">Client</a></li>
+        <li><a href="#server">Server</a></li>
+        <li><a href="#database">Database</a></li>
+        <li><a href="#api">API</a></li>
+      </ul>
+    </nav>
+    <main>
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>
+          This project is an IoT control system designed to manage and control
+          smart devices. It consists of a client-side application for user
+          interaction, a server-side component for backend logic and device
+          communication, and a database for storing configuration and log data.
+          The system supports managing users, devices, rooms, scenes, and
+          logging events. Communication with devices likely involves MQTT.
+        </p>
+      </section>
+      <section id="client">
+        <h2>Client</h2>
+        <p>
+          The client application is built using React and Vite. It provides a
+          user-friendly interface to interact with the smart home system. Key
+          features include:
+        </p>
+        <ul>
+          <li>User authentication and management.</li>
+          <li>Device listing, adding, updating, and removal.</li>
+          <li>Room creation and management.</li>
+          <li>Scene creation, management, and activation.</li>
+          <li>Viewing system logs.</li>
+          <li>Importing and exporting settings.</li>
+        </ul>
+        <p>Detailed documentation for client components:</p>
+        <ul>
+          <li><a href="./App.jsx.html">App Component (client/src/App.jsx)</a></li>
+          <li><a href="./main.jsx.html">Client Main Entry Point (client/src/main.jsx)</a></li>
+          <li><a href="./contexts/data-mode-context.jsx.html">Data Mode Context (client/src/contexts/data-mode-context.jsx)</a></li>
+          <li><a href="page/client-app.html">App.jsx</a></li>
+          <li><a href="page/about.jsx.html">About Page</a></li>
+          <li><a href="page/analytics.jsx.html">Analytics Page</a></li>
+          <li><a href="page/automations.jsx.html">Automations Page</a></li>
+          <li><a href="page/customer-care.jsx.html">Customer Care Page</a></li>
+          <li><a href="page/dashboard.jsx.html">Dashboard Page</a></li>
+          <li><a href="page/devices.jsx.html">Devices Page</a></li>
+          <li>
+            <a href="page/electricity-monitor.jsx.html"
+              >Electricity Monitor Page</a
+            >
+          </li>
+          <li><a href="page/logs.jsx.html">Logs Page</a></li>
+          <li><a href="page/my-plan.jsx.html">My Plan Page</a></li>
+          <li><a href="page/not-found.tsx.html">Not Found Page</a></li>
+          <li><a href="page/notifications.jsx.html">Notifications Page</a></li>
+          <li><a href="page/rooms.jsx.html">Rooms Page</a></li>
+          <li><a href="page/routes.jsx.html">Routes</a></li>
+          <li><a href="page/scenes.jsx.html">Scenes Page</a></li>
+          <li><a href="page/settings.jsx.html">Settings Page</a></li>
+        </ul>
+        <p>
+          The client communicates with the server API to perform these actions.
+        </p>
+      </section>
+      <section id="server">
+        <h2>Server</h2>
+        <p>
+          The server-side component is built using Node.js and Express. It handles API requests, interacts with the database, and communicates with IoT devices. Key responsibilities include:
+        </p>
+        <ul>
+          <li>Handling user authentication and authorization.</li>
+          <li>Managing device connections and communication (likely via MQTT).</li>
+          <li>Processing API requests for devices, rooms, scenes, and logs.</li>
+          <li>Storing and retrieving data from the database.</li>
+        </ul>
+        <p>Detailed documentation for server files:</p>
+        <ul>
+          <li><a href="./server/index.ts.html">Server Index (server/index.ts)</a></li>
+          The server component, likely built with Node.js and TypeScript,
+          handles the core logic of the IoT system. Its responsibilities
+          include:
+        </p>
+        <ul>
+          <li>Managing the database interactions.</li>
+          <li>Handling API requests from the client.</li>
+          <li>Communicating with physical devices (potentially via MQTT).</li>
+          <li>Processing device status updates and commands.</li>
+        </ul>
+        <p>The server acts as the central hub for data and device control.</p>
+        <p>Detailed documentation for server components:</p>
+        <ul>
+          <li><a href="server/index.ts.html">index.ts</a></li>
+          <li><a href="server/routes.ts.html">routes.ts</a></li>
+          <li><a href="server/storage.ts.html">storage.ts</a></li>
+          <li><a href="server/vite.ts.html">vite.ts</a></li>
+        </ul>
+      </section>
+      <section id="database">
+        <h2>Database</h2>
+        <p>
+          The project uses a database to store persistent data such as user information, device configurations, room layouts, scene definitions, and system logs. The database schema is defined using Drizzle ORM.
+        </p>
+        <p>Detailed documentation for database and schema files:</p>
+        <ul>
+          <li><a href="./shared/schema.ts.html">Shared Schema (shared/schema.ts)</a></li>
+          The project uses a database to persist application data. Based on the
+          file structure, it appears to use LokiJS for client-side data
+          (possibly for mock data or local storage) and Drizzle ORM with a
+          backend database (like SQLite, PostgreSQL, etc., as suggested by
+          `drizzle.config.ts`) on the server. The database stores information
+          about:
+        </p>
+        <ul>
+          <li>Users</li>
+          <li>
+            Devices (with properties like ID, route, status, room association)
+          </li>
+          <li>Routes (for device communication)</li>
+          <li>Logs (system events and actions)</li>
+          <li>Settings (application configuration)</li>
+          <li>Rooms (for organizing devices)</li>
+          <li>Scenes (predefined actions for multiple devices)</li>
+        </ul>
+        <p>The database schema is defined in <code>shared/schema.ts</code>.</p>
+        <p>Detailed documentation for database components:</p>
+        <ul>
+          <li><a href="database/db.ts.html">db.ts</a></li>
+          <li><a href="database/schema.ts.html">schema.ts</a></li>
+        </ul>
+      </section>
+      <section id="api">
+        <h2>API</h2>
+        <p>
+          The client and server interact through a RESTful API. The API
+          endpoints allow the client to:
+        </p>
+        <ul>
+          <li>Authenticate users.</li>
+          <li>Manage users, devices, rooms, and scenes.</li>
+          <li>Retrieve system logs and settings.</li>
+          <li>
+            Control devices (potentially via specific API calls that trigger
+            MQTT messages).
+          </li>
+        </ul>
+        <p>
+          The API provides the interface for the client to manage the smart home
+          system.
+        </p>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>

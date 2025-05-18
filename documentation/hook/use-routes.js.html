@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>useRoutes Hook Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>useRoutes Hook (hooks/use-routes.js) Documentation</h1>
+    </header>
+    <main>
+          <h2>Overview</h2>
+          <p>
+            The <code>useRoutes</code> hook (<code>hooks/use-routes.js</code>) is a custom React hook designed to manage the state and operations related to application routes. It provides functions for loading, creating, updating, and deleting routes, as well as recording route access.
+          </p>
+          <h3>State</h3>
+          <ul>
+            <li><code>routes</code>: An array containing the list of routes.</li>
+            <li><code>isLoading</code>: A boolean indicating whether routes are currently being loaded.</li>
+            <li><code>error</code>: Stores any error that occurs during route operations.</li>
+          </ul>
+          <h3>Functions</h3>
+          <ul>
+            <li><code>loadRoutes()</code>: Fetches all routes from the database and updates the <code>routes</code> state.</li>
+            <li><code>createRoute(routeData)</code>: Adds a new route to the database and updates the <code>routes</code> state.</li>
+            <li><code>editRoute(id, routeData)</code>: Updates an existing route in the database and updates the <code>routes</code> state.</li>
+            <li><code>deleteRoute(id)</code>: Removes a route from the database and updates the <code>routes</code> state.</li>
+            <li><code>recordAccess(route)</code>: Records an access event for a specific route.</li>
+            <li><code>getRouteByPath(path)</code>: Finds and returns a route object based on its path.</li>
+          </ul>
+          <h3>Dependencies</h3>
+          <ul>
+            <li><code>useState</code> and <code>useEffect</code> from React.</li>
+            <li>Database interaction functions (<code>addRoute</code>, <code>updateRoute</code>, <code>removeRoute</code>, <code>getAllRoutes</code>, <code>updateRouteAccess</code>, <code>addLog</code>) from <code>@/lib/db</code>.</li>
+          </ul>
+          <h3>Usage</h3>
+          <p>
+            This hook is intended to be used in components or other hooks that need to interact with the application's routing data. It encapsulates the data fetching, state management, and error handling logic for routes.
+          </p>
+        </section>
+      </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

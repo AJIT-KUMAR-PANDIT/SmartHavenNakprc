@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Schema Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Database Schema (shared/schema.ts) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          The <code>shared/schema.ts</code> file defines the database schema for
+          the SmartHaven project using Drizzle ORM and Zod for type validation.
+          It includes definitions for the main data models used across the
+          client and server.
+        </p>
+        <h3>Data Models</h3>
+        <p>The following data models are defined:</p>
+        <h4>User</h4>
+        <ul>
+          <li><code>id</code> (text): Primary key, unique identifier.</li>
+          <li>
+            <code>username</code> (text): User's username, not null, unique.
+          </li>
+          <li><code>pin</code> (text): User's PIN, not null.</li>
+          <li>
+            <code>createdAt</code> (timestamp): Timestamp of user creation,
+            defaults to now.
+          </li>
+        </ul>
+        <p>
+          Associated Zod schema: <code>insertUserSchema</code> for creating new
+          users.
+        </p>
+        <h4>Device</h4>
+        <ul>
+          <li><code>id</code> (string): Unique identifier.</li>
+          <li><code>name</code> (string): Device name.</li>
+          <li>
+            <code>route</code> (string): Associated route for communication.
+          </li>
+          <li>
+            <code>type</code> (string): Device type (e.g., light, sensor).
+          </li>
+          <li><code>pin</code> (number): Device PIN.</li>
+          <li>
+            <code>status</code> (string): Current status (e.g., online,
+            offline).
+          </li>
+          <li>
+            <code>lastSeen</code> (string | null): Timestamp of last seen
+            activity.
+          </li>
+          <li>
+            <code>value</code> (number, optional): Current value for sensors.
+          </li>
+          <li><code>unit</code> (string, optional): Unit for sensor value.</li>
+          <li>
+            <code>brightness</code> (number, optional): Brightness level for
+            lights.
+          </li>
+          <li>
+            <code>level</code> (number, optional): Generic level for devices.
+          </li>
+        </ul>
+        <h4>Route</h4>
+        <ul>
+          <li><code>id</code> (string): Unique identifier.</li>
+          <li><code>route</code> (string): Route path.</li>
+          <li>
+            <code>type</code> (string): Route type (e.g., system, device).
+          </li>
+          <li>
+            <code>action</code> (string, optional): Description of the action.
+          </li>
+          <li>
+            <code>method</code> (string, optional): HTTP method (e.g., GET,
+            POST).
+          </li>
+          <li>
+            <code>lastAccessed</code> (string | null): Timestamp of last access.
+          </li>
+          <li>
+            <code>deviceStatus</code> (string, optional): Associated device
+            status.
+          </li>
+        </ul>
+        <h4>Log</h4>
+        <ul>
+          <li><code>action</code> (string): Type of action logged.</li>
+          <li><code>message</code> (string): Log message details.</li>
+          <li><code>timestamp</code> (string): Timestamp of the log entry.</li>
+        </ul>
+        <h4>Settings</h4>
+        <p>
+          An object containing various application settings, potentially
+          including:
+        </p>
+        <ul>
+          <li><code>mqtt</code>: MQTT connection settings.</li>
+          <li><code>notifications</code>: Notification preferences.</li>
+          <li><code>theme</code>: UI theme settings.</li>
+          <li><code>advanced</code>: Advanced configuration options.</li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>

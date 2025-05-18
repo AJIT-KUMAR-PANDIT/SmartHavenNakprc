@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sidebar Component Documentation</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Sidebar Component (components/ui/sidebar.tsx) Documentation</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Overview</h2>
+        <p>
+          The Sidebar component (<code>components/ui/sidebar.tsx</code>)
+          provides a flexible and collapsible sidebar layout for the
+          application. It includes support for different variants (sidebar,
+          floating, inset) and collapsible behaviors (offcanvas, icon, none).
+        </p>
+        <h3>Usage</h3>
+        <p>
+          The component uses a context (`SidebarContext`) to manage its state
+          (expanded/collapsed, open/closed for mobile) and provides a hook
+          (`useSidebar`) to access this context. It also includes a keyboard
+          shortcut (`Ctrl+B` or `Cmd+B`) to toggle the sidebar state.
+        </p>
+        <h3>Dependencies</h3>
+        <ul>
+          <li>
+            <code>@radix-ui/react-slot</code>: Used for flexible component
+            rendering.
+          </li>
+          <li>
+            <code>class-variance-authority</code>: For managing component
+            variants.
+          </li>
+          <li><code>lucide-react</code>: Used for icons (e.g., PanelLeft).</li>
+          <li>
+            <code>useIsMobile</code> hook: To determine the current device type.
+          </li>
+          <li>
+            <code>cn</code> utility function: For conditionally joining and
+            merging CSS classes.
+          </li>
+          <li>
+            <code>Button</code>, <code>Input</code>, <code>Separator</code>,
+            <code>Sheet</code>, <code>Skeleton</code>,
+            <code>Tooltip</code> components: Other UI components used within the
+            sidebar.
+          </li>
+        </ul>
+        <h3>Props</h3>
+        <ul>
+          <li>
+            <code>side</code>: Specifies the side of the screen the sidebar
+            appears on ('left' or 'right').
+          </li>
+          <li>
+            <code>variant</code>: Defines the visual style and behavior
+            ('sidebar', 'floating', or 'inset').
+          </li>
+          <li>
+            <code>collapsible</code>: Controls how the sidebar collapses
+            ('offcanvas', 'icon', or 'none').
+          </li>
+          <li>
+            <code>defaultOpen</code>: Initial open state (for uncontrolled
+            usage).
+          </li>
+          <li><code>open</code>: Controlled open state.</li>
+          <li>
+            <code>onOpenChange</code>: Callback for when the open state changes.
+          </li>
+        </ul>
+        <h3>Styling</h3>
+        <p>
+          Styling is applied using Tailwind CSS classes and the
+          <code>cn</code> utility function, with support for different states
+          (`data-state="expanded"` or `data-state="collapsed"`).
+        </p>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Project Documentation</p>
+    </footer>
+  </body>
+</html>
