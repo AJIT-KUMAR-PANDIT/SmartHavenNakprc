@@ -6,7 +6,7 @@ import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 export default defineConfig({
   server: {
     allowedHosts: [
-      "9493-2401-4900-1c36-4bf7-c4b8-cef3-1e20-fef7.ngrok-free.app",
+      "b381-2401-4900-1c36-4bf7-4188-ce70-929-3f74.ngrok-free.app",
     ],
   },
   plugins: [
